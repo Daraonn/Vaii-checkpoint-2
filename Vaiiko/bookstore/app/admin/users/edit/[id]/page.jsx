@@ -64,7 +64,7 @@ export default function EditUserPage() {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
-        password: password1 || undefined, // only send if new password provided
+        password: password1 || undefined, 
       };
 
       const res = await fetch(`/api/admin/users/${id}`, {
