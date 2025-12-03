@@ -1,0 +1,140 @@
+.searchbar-container {
+  position: relative;
+  width: 600px; 
+  max-width: 100%; 
+  margin: 0 auto;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.search-bar button:hover {
+  background-color: #0056b3;
+}
+
+
+.results {
+  position: absolute; 
+  top: 100%; 
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 0 0 8px 8px;
+  padding: 8px;
+  background-color: #fafafa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000; 
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.result-row:hover {
+  background-color: #f0f0f0;
+}
+
+.book-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.no-results {
+  padding: 10px;
+  color: #999;
+  text-align: center;
+}
+
+
+@media (max-width: 1024px) {
+  .searchbar-container {
+    width: 90%;
+  }
+
+  .search-bar input {
+    font-size: 15px;
+    padding: 9px 12px;
+  }
+
+  .search-bar button {
+    font-size: 15px;
+    padding: 9px 15px;
+  }
+
+  .book-name {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchbar-container {
+    width: 95%;
+  }
+
+  .search-bar input {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .search-bar button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .book-name {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchbar-container {
+    width: 100%;
+  }
+
+  .search-bar input {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .search-bar button {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .book-name {
+    font-size: 0.8rem;
+  }
+}

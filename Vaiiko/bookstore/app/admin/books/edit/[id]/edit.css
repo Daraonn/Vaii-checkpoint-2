@@ -1,0 +1,95 @@
+.edit-book-container {
+  padding: 40px;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.edit-book-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.edit-book-container p {
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.edit-book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-book-form input {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border 0.3s, box-shadow 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-book-form input:focus {
+  border-color: blue;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.edit-book-form button {
+  padding: 12px;
+  background-color: blue;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.edit-book-form button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+
+@media (max-width: 768px) {
+  .edit-book-container {
+    padding: 30px 20px;
+    max-width: 90%;
+  }
+
+  .edit-book-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .edit-book-form input,
+  .edit-book-form button {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-book-container {
+    padding: 25px 15px;
+    border-radius: 10px;
+  }
+
+  .edit-book-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .edit-book-form input,
+  .edit-book-form button {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}

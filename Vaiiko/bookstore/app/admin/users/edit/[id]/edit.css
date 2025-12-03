@@ -1,0 +1,125 @@
+
+.edit-user-container {
+  padding: 40px;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+
+.edit-user-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+
+.edit-user-container p {
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.success-msg {
+  color: green;
+}
+
+.error-msg {
+  color: red;
+}
+
+
+.edit-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+.edit-user-form input[type="text"],
+.edit-user-form input[type="email"],
+.edit-user-form input[type="password"] {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border 0.3s, box-shadow 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-user-form input:focus {
+  border-color: blue;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+
+.edit-user-form label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  gap: 10px; 
+}
+
+.edit-user-form input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+
+.edit-user-form button {
+  padding: 12px;
+  background-color: blue;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.edit-user-form button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .edit-user-container {
+    padding: 30px 20px;
+    max-width: 90%;
+  }
+
+  .edit-user-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .edit-user-form input,
+  .edit-user-form button {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-user-container {
+    padding: 25px 15px;
+    border-radius: 10px;
+  }
+
+  .edit-user-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .edit-user-form input,
+  .edit-user-form button {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
