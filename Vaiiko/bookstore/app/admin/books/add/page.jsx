@@ -5,18 +5,26 @@ import "./add.css";
 
 export default function AddBook() {
   const router = useRouter();
+
   const [book, setBook] = useState({
     name: "",
     author: "",
     price: "",
     ISBN: "",
     image: "",
+    about: "",
+    language: "",
+    year: "",
   });
+
   const [msg, setMsg] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setBook((prev) => ({ ...prev, [name]: value }));
+    setBook((prev) => ({
+      ...prev,
+      [name]: name === "price" || name === "year" ? Number(value) : value,
+    }));
   };
 
   const submit = async (e) => {
@@ -24,7 +32,7 @@ export default function AddBook() {
     setMsg("");
 
     try {
-      const res = await fetch(`/api/admin/books`, {
+      const res = await fetch("/api/admin/books", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(book),
@@ -34,8 +42,16 @@ export default function AddBook() {
       if (!res.ok) throw new Error(data.error || "Failed to add book");
 
       setMsg("Book added successfully!");
-      setBook({ name: "", author: "", price: "", ISBN: "", image: "" });
-
+      setBook({
+        name: "",
+        author: "",
+        price: "",
+        ISBN: "",
+        image: "",
+        about: "",
+        language: "",
+        year: "",
+      });
     } catch (err) {
       console.error(err);
       setMsg(err.message);
@@ -46,16 +62,29 @@ export default function AddBook() {
     <div className="add-book-container">
       <h1>Add Book</h1>
 
-      {msg && <p style={{ color: msg.includes("successfully") ? "green" : "red" }}>{msg}</p>}
+      {msg && (
+        <p style={{ color: msg.includes("successfully") ? "green" : "red" }}>
+          {msg}
+        </p>
+      )}
 
       <form onSubmit={submit} className="add-book-form">
         <input
           name="name"
-          placeholder="Name"
+          placeholder="Book Name"
           value={book.name}
           onChange={handleChange}
           required
         />
+
+        <input
+          name="author"
+          placeholder="Author"
+          value={book.author}
+          onChange={handleChange}
+          required
+        />
+
         <input
           name="price"
           type="number"
@@ -64,13 +93,7 @@ export default function AddBook() {
           onChange={handleChange}
           required
         />
-        <input
-          name="author"
-          placeholder="Author"
-          value={book.author}
-          onChange={handleChange}
-          required
-        />
+
         <input
           name="ISBN"
           placeholder="ISBN"
@@ -78,11 +101,44 @@ export default function AddBook() {
           onChange={handleChange}
           required
         />
+
+        <input
+          name="language"
+          placeholder="Language"
+          value={book.language}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="year"
+          type="number"
+          placeholder="Publication Year"
+          value={book.year}
+          onChange={handleChange}
+          required
+        />
+
         <input
           name="image"
-          placeholder="Image URL"
-          value={book.image || ""}
+          placeholder="Image URL (optional)"
+          value={book.image}
           onChange={handleChange}
+        />
+
+        <textarea
+          name="about"
+          placeholder="About the book"
+          value={book.about}
+          onChange={handleChange}
+          required
+          style={{
+            padding: "12px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            minHeight: "100px",
+            fontSize: "1rem",
+          }}
         />
 
         <button type="submit">Add Book</button>

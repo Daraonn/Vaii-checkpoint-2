@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+   url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,28 +17,46 @@ model User {
   isAdmin   Boolean   @default(false)
 
   favouriteBooks FavouriteBook[]
+  cartItems       CartItem[]
 }
 
 
 model Book {
-  book_id   Int     @id @default(autoincrement())
-  name      String
-  price     Int
-  author    String
-  ISBN      String  @unique
-  image     String?
-  
+  book_id         Int     @id @default(autoincrement())
+  name            String
+  price           Int
+  author          String
+  ISBN            String  @unique
+  image           String?
 
-  favouritedBy   FavouriteBook[]
+  about           String     
+  language        String     
+  year            Int         
+  favouritedBy    FavouriteBook[]
+  cartItems       CartItem[]
 }
 
 
 model FavouriteBook {
-  book_id   Int
-  user_id   Int
+  favourite_id Int      @id @default(autoincrement())
+  user_id      Int
+  book_id      Int
+  addedAt      DateTime @default(now())
 
-  user      User @relation(fields: [user_id], references: [user_id])
-  book      Book @relation(fields: [book_id], references: [book_id])
+  user User @relation(fields: [user_id], references: [user_id])
+  book Book @relation(fields: [book_id], references: [book_id])
 
-  @@id([user_id, book_id])
+  @@unique([user_id, book_id])
+}
+model CartItem {
+  cart_item_id Int      @id @default(autoincrement())
+  user_id      Int
+  book_id      Int
+  quantity     Int      @default(1)  
+  addedAt      DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [user_id])
+  book Book @relation(fields: [book_id], references: [book_id])
+
+  @@unique([user_id, book_id]) 
 }

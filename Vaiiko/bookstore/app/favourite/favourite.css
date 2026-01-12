@@ -1,0 +1,97 @@
+/* PAGE CENTERING */
+.favourite-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* COLUMN OF BOOKS */
+.favourite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* SINGLE ROW */
+.favourite-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* BOOK IMAGE (LEFT) */
+.favourite-row-img {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* NAME + AUTHOR */
+.favourite-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.favourite-row-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.favourite-author {
+  font-size: 14px;
+  color: #666;
+}
+
+/* PUSH CONTROLS TO RIGHT */
+.favourite-spacer {
+  flex: 1;
+}
+
+/* ACTION BUTTONS */
+.favourite-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.fav-btn img {
+  width: 24px;          
+  height: 24px;
+  object-fit: contain;   
+  display: block;        
+}
+
+/* PAGINATION CONTROLS */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #0070f3;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

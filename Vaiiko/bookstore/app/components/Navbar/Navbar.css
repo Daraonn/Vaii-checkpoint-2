@@ -105,6 +105,36 @@
   width: 40px;
 }
 
+.navbar-cart-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navbar-cart {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-cart-img {
+  width: 28px;     
+  height: 28px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.navbar-favourite {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.navbar-favourite-img {
+  width: 28px;
+  height: 28px;
+}
+
 
 @media (max-width: 1024px) {
   .navbar-left {

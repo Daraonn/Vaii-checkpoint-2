@@ -1,0 +1,120 @@
+/* PAGE CENTERING */
+.cart-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* COLUMN OF BOOKS */
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* SINGLE ROW */
+.cart-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* BOOK IMAGE (LEFT) */
+.cart-row-img {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* NAME + AUTHOR */
+.cart-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.cart-row-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cart-author {
+  font-size: 14px;
+  color: #666;
+}
+
+/* PUSH CONTROLS TO RIGHT */
+.cart-spacer {
+  flex: 1;
+}
+
+/* QUANTITY CONTROLS */
+.cart-qty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cart-qty span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ACTION BUTTONS */
+.cart-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.fav-btn img {
+  width: 24px;          
+  height: 24px;
+  object-fit: contain;   
+  display: block;        
+}
+
+/* PRICE (RIGHT END) */
+.cart-price {
+  min-width: 90px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* TOTAL */
+.cart-total {
+  margin-top: 30px;
+  text-align: right;
+  font-size: 20px;
+  font-weight: 600;
+}

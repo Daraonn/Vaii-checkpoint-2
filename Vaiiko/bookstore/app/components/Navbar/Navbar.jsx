@@ -34,9 +34,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await fetch('/api/logout', { method: 'POST' });
-
       if (setUser) setUser(null);
-
       router.push('/');
     } catch (err) {
       console.error('Logout failed:', err);
@@ -71,12 +69,24 @@ export default function Navbar() {
       <div className="navbar-right">
         {user ? (
           <>
-            <Link href="/profile" className="navbar-profile-link">
-              <div className="navbar-profile">
-                <img src="/profile-picture.png" alt="Profile" />
-                <p>{user.name}</p>
+            <Link href="/favourite" className="navbar-favourite-link">
+              <div className="navbar-favourite">
+                <img src="/heart.png" alt="Favourites" className="navbar-favourite-img" />
               </div>
             </Link>
+
+            <Link href="/cart" className="navbar-cart-link">
+              <div className="navbar-cart">
+                <img src="/cart.png" alt="Cart" className="navbar-cart-img" />
+              </div>
+            </Link>
+
+            <Link href="/profile" className="navbar-profile-link">
+              <div className="navbar-profile">
+                <img src="/profile-picture.png" alt={user.name} />
+              </div>
+            </Link>
+
             <button onClick={handleLogout} className="navbar-logout-link">
               <div className="navbar-logout"><p>Logout</p></div>
             </button>

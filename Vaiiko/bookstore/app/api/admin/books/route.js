@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -8,18 +8,35 @@ export async function GET() {
     return new Response(JSON.stringify({ books }), { status: 200 });
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: "Failed to fetch books" }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch books" }),
+      { status: 500 }
+    );
   }
 }
 
-
 export async function POST(req) {
   try {
-    const { name, author, price, ISBN } = await req.json();
+    const {
+      name,
+      author,
+      price,
+      ISBN,
+      image,
+      about,
+      language,
+      year,
+    } = await req.json();
 
-    
+    if (!name || !author || !ISBN || !about || !language || !year) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400 }
+      );
+    }
+
     const existing = await prisma.book.findUnique({
-      where: { ISBN }
+      where: { ISBN },
     });
 
     if (existing) {
@@ -29,9 +46,17 @@ export async function POST(req) {
       );
     }
 
-    
     const book = await prisma.book.create({
-      data: { name, author, price: Number(price), ISBN }
+      data: {
+        name,
+        author,
+        price: Number(price),
+        ISBN,
+        image: image || null,
+        about,
+        language,
+        year: Number(year),
+      },
     });
 
     return new Response(JSON.stringify(book), { status: 201 });
@@ -39,10 +64,9 @@ export async function POST(req) {
   } catch (err) {
     console.error(err);
 
-    
     if (err.code === "P2002") {
       return new Response(
-        JSON.stringify({ error: "Duplicate ISBN. Book already exists." }), 
+        JSON.stringify({ error: "Duplicate ISBN. Book already exists." }),
         { status: 400 }
       );
     }

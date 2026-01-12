@@ -1,16 +1,16 @@
 .add-book-container {
   padding: 40px;
-  max-width: 500px;
+  max-width: 600px; /* increased width for larger forms */
   margin: 0 auto;
   background-color: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
 .add-book-container h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 2rem;
   color: #333;
 }
@@ -27,7 +27,8 @@
   gap: 15px;
 }
 
-.add-book-form input {
+.add-book-form input,
+.add-book-form textarea {
   padding: 12px 15px;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -35,9 +36,12 @@
   transition: border 0.3s, box-shadow 0.3s;
   width: 100%;
   box-sizing: border-box;
+  resize: vertical; /* allows resizing textarea */
+  font-family: inherit;
 }
 
-.add-book-form input:focus {
+.add-book-form input:focus,
+.add-book-form textarea:focus {
   border-color: #0070f3;
   box-shadow: 0 0 5px rgba(0, 112, 243, 0.5);
   outline: none;
@@ -59,7 +63,7 @@
   transform: scale(1.02);
 }
 
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .add-book-container {
     padding: 30px 20px;
@@ -71,6 +75,7 @@
   }
 
   .add-book-form input,
+  .add-book-form textarea,
   .add-book-form button {
     font-size: 0.95rem;
     padding: 10px 12px;
@@ -88,6 +93,7 @@
   }
 
   .add-book-form input,
+  .add-book-form textarea,
   .add-book-form button {
     font-size: 0.9rem;
     padding: 8px 10px;
