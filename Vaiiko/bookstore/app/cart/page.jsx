@@ -9,7 +9,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
-  // Fetch user ID
+ 
   const fetchUserId = async () => {
     try {
       const res = await fetch('/api/token');

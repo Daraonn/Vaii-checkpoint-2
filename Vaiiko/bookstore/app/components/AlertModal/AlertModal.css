@@ -1,0 +1,260 @@
+/* File: components/AlertModal/AlertModal.css */
+
+.alert-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.alert-modal {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  width: 360px;
+  max-height: 600px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.alert-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.alert-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.alert-modal-close:hover {
+  background: #f0f0f0;
+}
+
+.alert-modal-actions {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mark-all-read-btn-modal {
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.mark-all-read-btn-modal:hover {
+  background: #218838;
+}
+
+.alert-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px;
+}
+
+.alert-modal-loading,
+.alert-modal-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.alert-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f5f5f5;
+}
+
+.alert-modal-item:hover {
+  background: #ebebeb;
+}
+
+.alert-modal-item.unread {
+  background: #ffffff;
+}
+
+.alert-modal-item.unread:hover {
+  background: #f8f9fa;
+}
+
+.alert-modal-item-avatar {
+  flex-shrink: 0;
+}
+
+.alert-modal-item-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.alert-modal-avatar-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.alert-modal-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-modal-item-message {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.alert-modal-item-message strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.alert-modal-item-time {
+  font-size: 12px;
+  color: #666;
+}
+
+.alert-modal-item-book {
+  flex-shrink: 0;
+}
+
+.alert-modal-item-book img {
+  width: 35px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.alert-modal-item-unread-dot {
+  position: absolute;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  background: #007bff;
+  border-radius: 50%;
+}
+
+.alert-modal-footer {
+  padding: 10px 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.view-all-alerts-btn {
+  width: 100%;
+  padding: 8px;
+  background: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.view-all-alerts-btn:hover {
+  background: #007bff;
+  color: white;
+}
+
+/* Scrollbar styling */
+.alert-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.alert-modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.alert-modal-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.alert-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .alert-modal {
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 500px;
+  }
+
+  .alert-modal-content {
+    max-height: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-modal {
+    top: 60px;
+    right: 5px;
+    left: 5px;
+  }
+
+  .alert-modal-item-avatar img,
+  .alert-modal-avatar-fallback {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .alert-modal-item-book img {
+    width: 30px;
+    height: 42px;
+  }
+}
