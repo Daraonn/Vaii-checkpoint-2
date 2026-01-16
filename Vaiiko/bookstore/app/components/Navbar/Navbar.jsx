@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useUser } from '../../context/user';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,8 @@ import './Navbar.css';
 export default function Navbar() {
   const userContext = useUser();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   if (!userContext) return null;
 
@@ -22,23 +24,35 @@ export default function Navbar() {
       try {
         const res = await fetch('/api/token');
         const data = await res.json();
-        if (setUser) setUser(data.user);
+        setUser(data.user);
       } catch {
-        if (setUser) setUser(null);
+        setUser(null);
       }
     };
 
     fetchUser();
   }, [setUser]);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   const handleLogout = async () => {
-    try {
-      await fetch('/api/logout', { method: 'POST' });
-      if (setUser) setUser(null);
-      router.push('/');
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
+    await fetch('/api/logout', { method: 'POST' });
+    setUser(null);
+    router.push('/');
+  };
+
+  const handleProfileNavigation = (tab) => {
+    router.push(`/profile/${user.user_id}?tab=${tab}`);
+    setOpen(false);
   };
 
   return (
@@ -55,10 +69,14 @@ export default function Navbar() {
           <div className="navbar-home"><p>Home</p></div>
         </Link>
 
+        <Link href="/browse" className="navbar-menu-link">
+          <div className="navbar-browse"><p>Browse</p></div>
+        </Link>
+
         <div className="navbar-searchbar">
           <Searchbar />
         </div>
-        
+
         {user?.isAdmin && (
           <Link href="/admin/books" className="navbar-menu-link">
             <div className="navbar-admin"><p>Admin Panel</p></div>
@@ -71,25 +89,106 @@ export default function Navbar() {
           <>
             <Link href="/favourite" className="navbar-favourite-link">
               <div className="navbar-favourite">
-                <img src="/heart.png" alt="Favourites" className="navbar-favourite-img" />
+                <img
+                  src="/heart.png"
+                  alt="Favourites"
+                  className="navbar-favourite-img"
+                />
               </div>
             </Link>
 
             <Link href="/cart" className="navbar-cart-link">
               <div className="navbar-cart">
-                <img src="/cart.png" alt="Cart" className="navbar-cart-img" />
+                <img
+                  src="/cart.png"
+                  alt="Cart"
+                  className="navbar-cart-img"
+                />
               </div>
             </Link>
 
-            <Link href="/profile" className="navbar-profile-link">
-              <div className="navbar-profile">
-                <img src="/profile-picture.png" alt={user.name} />
+            {/* PROFILE + DROPDOWN */}
+            <div className="navbar-profile-wrapper" ref={dropdownRef}>
+              <div
+                className="navbar-profile-trigger"
+                role="button"
+                tabIndex={0}
+                onClick={() => setOpen(!open)}
+              >
+                <img
+                  src={user.avatar || "/login-picture.png"}
+                  alt={user.name}
+                  className="navbar-profile-img"
+                  onError={(e) => {
+                  console.log('Image failed to load:', e.target.src);
+                  e.target.src = "/login-picture.png";
+                }}
+/>
+                <p className="navbar-username">{user.name}</p>
               </div>
-            </Link>
 
-            <button onClick={handleLogout} className="navbar-logout-link">
-              <div className="navbar-logout"><p>Logout</p></div>
-            </button>
+              {open && (
+                <div className="navbar-dropdown">
+                  <div className="navbar-dropdown-arrow" />
+                  
+                  <Link
+                    href={`/profile/${user.user_id}`}
+                    className="navbar-dropdown-item"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="dropdown-icon">👤</span>
+                    Profile
+                  </Link>
+
+                  <div className="navbar-dropdown-divider" />
+
+                  <div
+                    className="navbar-dropdown-item"
+                    onClick={() => handleProfileNavigation('reviews')}
+                  >
+                    <span className="dropdown-icon">📝</span>
+                    My Reviews
+                  </div>
+
+                  <div
+                    className="navbar-dropdown-item"
+                    onClick={() => handleProfileNavigation('favorites')}
+                  >
+                    <span className="dropdown-icon">⭐</span>
+                    My Favorites
+                  </div>
+
+                  <div
+                    className="navbar-dropdown-item"
+                    onClick={() => handleProfileNavigation('follows')}
+                  >
+                    <span className="dropdown-icon">👥</span>
+                    Following
+                  </div>
+
+                  <div className="navbar-dropdown-divider" />
+
+                  <Link
+                    href="/settings"
+                    className="navbar-dropdown-item"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="dropdown-icon">⚙️</span>
+                    Settings
+                  </Link>
+
+                  <div className="navbar-dropdown-divider" />
+
+                  <div
+                    className="navbar-dropdown-item navbar-dropdown-logout"
+                    onClick={handleLogout}
+                  >
+                    <span className="dropdown-icon">🚪</span>
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <Link href="/login" className="navbar-login-link">

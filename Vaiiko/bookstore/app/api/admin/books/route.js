@@ -4,7 +4,13 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const books = await prisma.book.findMany();
+    const books = await prisma.book.findMany({
+      include: {
+        genres: {
+          include: { genre: true },
+        },
+      },
+    });
     return new Response(JSON.stringify({ books }), { status: 200 });
   } catch (err) {
     console.error(err);
@@ -26,6 +32,7 @@ export async function POST(req) {
       about,
       language,
       year,
+      genres, // Array of genre IDs
     } = await req.json();
 
     if (!name || !author || !ISBN || !about || !language || !year) {
@@ -46,6 +53,7 @@ export async function POST(req) {
       );
     }
 
+    // Create the book and link genres
     const book = await prisma.book.create({
       data: {
         name,
@@ -56,11 +64,21 @@ export async function POST(req) {
         about,
         language,
         year: Number(year),
+        genres: genres && genres.length > 0
+          ? {
+              create: genres.map((genreId) => ({ genre_id: Number(genreId) })),
+            }
+          : undefined,
+      },
+      include: {
+        genres: {
+          include: { genre: true },
+        },
       },
     });
 
     return new Response(JSON.stringify(book), { status: 201 });
-
+    
   } catch (err) {
     console.error(err);
 

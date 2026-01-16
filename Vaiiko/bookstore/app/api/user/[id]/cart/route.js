@@ -1,0 +1,126 @@
+import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+
+const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in environment variables');
+}
+
+async function getUserIdFromToken() {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get("token");
+  const token = tokenCookie?.value;
+  if (!token) return null;
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (typeof payload === "object" && payload !== null && "user_id" in payload) {
+      return payload.user_id;
+    }
+    return null;
+  } catch (err) {
+    console.error("JWT verify error:", err);
+    return null;
+  }
+}
+
+// GET /api/user/[id]/cart - Get user's cart
+export async function GET(request, { params }) {
+  try {
+    const { id } = await params;
+    const userId = await getUserIdFromToken();
+
+    // Users can only view their own cart
+    if (!userId || userId !== parseInt(id)) {
+      return new Response(
+        JSON.stringify({ error: 'Not authorized' }), 
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const cartItems = await prisma.cartItem.findMany({
+      where: { user_id: userId },
+      include: { book: true },
+      orderBy: { addedAt: 'desc' },
+    });
+
+    return new Response(
+      JSON.stringify(cartItems), 
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  } catch (err) {
+    console.error('Get cart error:', err);
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch cart" }), 
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+// POST /api/user/[id]/cart - Add item to cart
+export async function POST(request, { params }) {
+  try {
+    const { id } = await params;
+    const userId = await getUserIdFromToken();
+
+    if (!userId || userId !== parseInt(id)) {
+      return new Response(
+        JSON.stringify({ error: 'Not authorized' }), 
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const body = await request.json();
+    const bookIdNum = Number(body.book_id);
+    const quantityNum = Number(body.quantity) || 1;
+
+    if (bookIdNum == null || isNaN(bookIdNum)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid book_id" }), 
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (quantityNum < 1) {
+      return new Response(
+        JSON.stringify({ error: "Quantity must be at least 1" }), 
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const existing = await prisma.cartItem.findUnique({
+      where: { user_id_book_id: { user_id: userId, book_id: bookIdNum } },
+      include: { book: true },
+    });
+
+    if (existing) {
+      const updated = await prisma.cartItem.update({
+        where: { cart_item_id: existing.cart_item_id },
+        data: { quantity: existing.quantity + quantityNum },
+        include: { book: true },
+      });
+      return new Response(
+        JSON.stringify(updated), 
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    } else {
+      const newItem = await prisma.cartItem.create({
+        data: { user_id: userId, book_id: bookIdNum, quantity: quantityNum },
+        include: { book: true },
+      });
+      return new Response(
+        JSON.stringify(newItem), 
+        { status: 201, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+  } catch (err) {
+    console.error("Cart POST error:", err);
+    return new Response(
+      JSON.stringify({ error: "Failed to update cart" }), 
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}

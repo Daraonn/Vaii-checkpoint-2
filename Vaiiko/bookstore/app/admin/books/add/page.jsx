@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import "./add.css";
 
@@ -17,7 +17,27 @@ export default function AddBook() {
     year: "",
   });
 
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [genres, setGenres] = useState([]);
   const [msg, setMsg] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Fetch all genres
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await fetch("/api/genres");
+        const data = await res.json();
+        setGenres(data.genres);
+      } catch (err) {
+        console.error("Failed to fetch genres", err);
+      }
+    };
+    fetchGenres();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,6 +45,95 @@ export default function AddBook() {
       ...prev,
       [name]: name === "price" || name === "year" ? Number(value) : value,
     }));
+  };
+
+  const handleGenreToggle = (genreId) => {
+    setSelectedGenres((prev) =>
+      prev.includes(genreId)
+        ? prev.filter((id) => id !== genreId)
+        : [...prev, genreId]
+    );
+  };
+
+  const uploadImage = async (file) => {
+    if (!file) return null;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setMsg("Please upload a valid image file");
+      return null;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setMsg("Image size should be less than 5MB");
+      return null;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      setIsUploading(false);
+      return data.url; // Assumes your API returns { url: "..." }
+    } catch (err) {
+      console.error(err);
+      setMsg("Failed to upload image: " + err.message);
+      setIsUploading(false);
+      return null;
+    }
+  };
+
+  const handleImageDrop = async (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
+        setBook((prev) => ({ ...prev, image: imageUrl }));
+        setImagePreview(URL.createObjectURL(file));
+      }
+    }
+  };
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
+        setBook((prev) => ({ ...prev, image: imageUrl }));
+        setImagePreview(URL.createObjectURL(file));
+      }
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const removeImage = () => {
+    setBook((prev) => ({ ...prev, image: "" }));
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const submit = async (e) => {
@@ -35,7 +144,7 @@ export default function AddBook() {
       const res = await fetch("/api/admin/books", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(book),
+        body: JSON.stringify({ ...book, genres: selectedGenres }),
       });
 
       const data = await res.json();
@@ -52,6 +161,11 @@ export default function AddBook() {
         language: "",
         year: "",
       });
+      setSelectedGenres([]);
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (err) {
       console.error(err);
       setMsg(err.message);
@@ -119,12 +233,62 @@ export default function AddBook() {
           required
         />
 
-        <input
-          name="image"
-          placeholder="Image URL (optional)"
-          value={book.image}
-          onChange={handleChange}
-        />
+        {/* Image Upload Area */}
+        <div className="image-upload-section">
+          <h4>Book Cover Image</h4>
+          
+          {!imagePreview ? (
+            <div
+              className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
+              onDrop={handleImageDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {isUploading ? (
+                <p>Uploading...</p>
+              ) : (
+                <>
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  <p>Drag & drop an image here</p>
+                  <p style={{ fontSize: "0.9rem", color: "#666" }}>
+                    or click to browse
+                  </p>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="image-preview-container">
+              <img src={imagePreview} alt="Preview" className="image-preview" />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="remove-image-btn"
+              >
+                Remove Image
+              </button>
+            </div>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            style={{ display: "none" }}
+          />
+        </div>
 
         <textarea
           name="about"
@@ -141,7 +305,26 @@ export default function AddBook() {
           }}
         />
 
-        <button type="submit">Add Book</button>
+        {/* Genres panel */}
+        <div className="add-book-genres">
+          <h4>Select Genres</h4>
+          <div className="genres-panel">
+            {genres.map((genre) => (
+              <label key={genre.genre_id} className="genre-label">
+                <input
+                  type="checkbox"
+                  checked={selectedGenres.includes(genre.genre_id)}
+                  onChange={() => handleGenreToggle(genre.genre_id)}
+                />
+                {genre.name}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <button type="submit" disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Add Book"}
+        </button>
       </form>
     </div>
   );

@@ -1,0 +1,131 @@
+import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+
+const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in environment variables');
+}
+
+async function getUserIdFromToken() {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get("token");
+  const token = tokenCookie?.value;
+  if (!token) return null;
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (typeof payload === "object" && payload !== null && "user_id" in payload) {
+      return payload.user_id;
+    }
+    return null;
+  } catch (err) {
+    console.error("JWT verify error:", err);
+    return null;
+  }
+}
+
+// PATCH /api/user/[id]/cart/[itemId] - Update cart item quantity
+export async function PATCH(request, { params }) {
+  try {
+    const { id, itemId } = await params;
+    const userId = await getUserIdFromToken();
+
+    if (!userId || userId !== parseInt(id)) {
+      return new Response(
+        JSON.stringify({ error: "Not authorized" }), 
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const cartItemId = Number(itemId);
+    if (isNaN(cartItemId)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid cart item ID" }), 
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const body = await request.json();
+    const { quantity } = body;
+
+    if (!quantity || quantity < 1) {
+      return new Response(
+        JSON.stringify({ error: "Quantity must be at least 1" }), 
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const updated = await prisma.cartItem.updateMany({
+      where: { cart_item_id: cartItemId, user_id: userId },
+      data: { quantity },
+    });
+
+    if (updated.count === 0) {
+      return new Response(
+        JSON.stringify({ error: "Cart item not found" }), 
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const updatedItem = await prisma.cartItem.findUnique({
+      where: { cart_item_id: cartItemId },
+      include: { book: true },
+    });
+
+    return new Response(
+      JSON.stringify(updatedItem), 
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  } catch (err) {
+    console.error("PATCH cart error:", err);
+    return new Response(
+      JSON.stringify({ error: "Failed to update cart item" }), 
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+// DELETE /api/user/[id]/cart/[itemId] - Remove cart item
+export async function DELETE(request, { params }) {
+  try {
+    const { id, itemId } = await params;
+    const userId = await getUserIdFromToken();
+
+    if (!userId || userId !== parseInt(id)) {
+      return new Response(
+        JSON.stringify({ error: "Not authorized" }), 
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const cartItemId = Number(itemId);
+    if (isNaN(cartItemId)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid cart item ID" }), 
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const deleted = await prisma.cartItem.deleteMany({
+      where: { cart_item_id: cartItemId, user_id: userId },
+    });
+
+    if (deleted.count === 0) {
+      return new Response(
+        JSON.stringify({ error: "Cart item not found" }), 
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(null, { status: 204 });
+  } catch (err) {
+    console.error("DELETE cart error:", err);
+    return new Response(
+      JSON.stringify({ error: "Failed to delete cart item" }), 
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}

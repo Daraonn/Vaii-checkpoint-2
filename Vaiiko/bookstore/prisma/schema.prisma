@@ -1,25 +1,55 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-   url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  user_id   Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  name      String    @unique
-  createdAt DateTime  @default(now())
-  isAdmin   Boolean   @default(false)
-
-  favouriteBooks FavouriteBook[]
+  user_id         Int       @id @default(autoincrement())
+  name            String
+  email           String    @unique
+  password        String
+  isAdmin         Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  
+  // Profile fields
+  bio             String?
+  dateOfBirth     String?
+  title           String?
+  gender          String?
+  avatar          String?
+  
+  favouriteBooks  FavouriteBook[]
   cartItems       CartItem[]
+  ratings         Rating[]
+  reviews         Review[]
+  reviewComments  ReviewComment[]
+  reviewLikes     ReviewLike[]
+  followers       Follow[] @relation("Following")
+  following       Follow[] @relation("Follower")
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  blockedUsers     Block[]   @relation("BlockedUsers")
+  blockedBy        Block[]   @relation("BlockedBy")
 }
 
+model Follow {
+  follow_id    Int      @id @default(autoincrement())
+  follower_id  Int
+  following_id Int
+  createdAt    DateTime @default(now())
+  
+  follower     User @relation("Follower", fields: [follower_id], references: [user_id], onDelete: Cascade)
+  following    User @relation("Following", fields: [following_id], references: [user_id], onDelete: Cascade)
+  
+  @@unique([follower_id, following_id])
+  @@index([follower_id])
+  @@index([following_id])
+}
 
 model Book {
   book_id         Int     @id @default(autoincrement())
@@ -34,29 +64,154 @@ model Book {
   year            Int         
   favouritedBy    FavouriteBook[]
   cartItems       CartItem[]
+  genres          BookGenre[]
+  ratings         Rating[]
+  reviews         Review[]
 }
 
-
 model FavouriteBook {
-  favourite_id Int      @id @default(autoincrement())
-  user_id      Int
-  book_id      Int
-  addedAt      DateTime @default(now())
+  favourite_id    Int      @id @default(autoincrement())
+  user_id         Int
+  book_id         Int
+  addedAt         DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [user_id])
   book Book @relation(fields: [book_id], references: [book_id])
 
   @@unique([user_id, book_id])
 }
+
 model CartItem {
-  cart_item_id Int      @id @default(autoincrement())
-  user_id      Int
-  book_id      Int
-  quantity     Int      @default(1)  
-  addedAt      DateTime @default(now())
+  cart_item_id    Int      @id @default(autoincrement())
+  user_id         Int
+  book_id         Int
+  quantity        Int      @default(1)  
+  addedAt         DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [user_id])
   book Book @relation(fields: [book_id], references: [book_id])
 
   @@unique([user_id, book_id]) 
+}
+
+model Rating {
+  rating_id       Int      @id @default(autoincrement())
+  user_id         Int
+  book_id         Int
+  stars           Int?
+  status          ReadingStatus
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+
+  @@unique([user_id, book_id])
+  @@index([book_id])
+  @@index([user_id])
+}
+
+model Review {
+  review_id       Int      @id @default(autoincrement())
+  user_id         Int
+  book_id         Int
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user     User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book     Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  comments ReviewComment[]
+  likes    ReviewLike[]
+
+  @@unique([user_id, book_id])
+  @@index([book_id])
+  @@index([user_id])
+}
+
+model ReviewComment {
+  comment_id      Int      @id @default(autoincrement())
+  review_id       Int
+  user_id         Int
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  review Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
+  user   User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@index([review_id])
+  @@index([user_id])
+}
+
+model ReviewLike {
+  like_id         Int      @id @default(autoincrement())
+  review_id       Int
+  user_id         Int
+  is_like         Boolean
+  createdAt       DateTime @default(now())
+
+  review Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
+  user   User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@unique([review_id, user_id])
+  @@index([review_id])
+  @@index([user_id])
+}
+
+enum ReadingStatus {
+  COMPLETED
+  WANT_TO_READ
+  CURRENTLY_READING
+  DNF
+}
+
+model Genre {
+  genre_id        Int    @id @default(autoincrement())
+  name            String @unique
+
+  books    BookGenre[]
+}
+
+model BookGenre {
+  book_genre_id   Int @id @default(autoincrement())
+  book_id         Int
+  genre_id        Int
+
+  book  Book  @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  genre Genre @relation(fields: [genre_id], references: [genre_id], onDelete: Cascade)
+
+  @@unique([book_id, genre_id])
+}
+
+model Message {
+  message_id    Int       @id @default(autoincrement())
+  sender_id     Int
+  receiver_id   Int
+  content       String
+  is_deleted    Boolean   @default(false)
+  is_edited     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sender   User @relation("SentMessages", fields: [sender_id], references: [user_id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiver_id], references: [user_id], onDelete: Cascade)
+  
+  @@index([sender_id])
+  @@index([receiver_id])
+  @@index([createdAt])
+}
+
+model Block {
+  block_id    Int      @id @default(autoincrement())
+  blocker_id  Int
+  blocked_id  Int
+  createdAt   DateTime @default(now())
+  
+  blocker User @relation("BlockedUsers", fields: [blocker_id], references: [user_id], onDelete: Cascade)
+  blocked User @relation("BlockedBy", fields: [blocked_id], references: [user_id], onDelete: Cascade)
+  
+  @@unique([blocker_id, blocked_id])
+  @@index([blocker_id])
+  @@index([blocked_id])
 }

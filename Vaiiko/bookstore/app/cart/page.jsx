@@ -7,60 +7,103 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
 
-  const fetchCart = async () => {
+  // Fetch user ID
+  const fetchUserId = async () => {
     try {
-      const res = await fetch('/api/cart', { cache: 'no-store' });
-      setCartItems(await res.json());
-    } catch (err) { console.error(err); }
+      const res = await fetch('/api/token');
+      const data = await res.json();
+      if (data.user) {
+        setUserId(data.user.id);
+        return data.user.id;
+      }
+    } catch (err) {
+      console.error('Error fetching user:', err);
+    }
+    return null;
   };
 
-  const fetchFavourites = async () => {
+  const fetchCart = async (uid) => {
     try {
-      const res = await fetch('/api/favourite', { cache: 'no-store' });
-      setFavourites(await res.json());
-    } catch (err) { console.error(err); }
+      const res = await fetch(`/api/user/${uid}/cart`, { cache: 'no-store' });
+      setCartItems(await res.json());
+    } catch (err) { 
+      console.error('Error fetching cart:', err); 
+    }
+  };
+
+  const fetchFavourites = async (uid) => {
+    try {
+      const res = await fetch(`/api/user/${uid}/favorites`, { cache: 'no-store' });
+      const data = await res.json();
+      setFavourites(data.favorites || []);
+    } catch (err) { 
+      console.error('Error fetching favourites:', err); 
+    }
   };
 
   useEffect(() => {
-    Promise.all([fetchCart(), fetchFavourites()]).finally(() => setLoading(false));
+    const loadData = async () => {
+      const uid = await fetchUserId();
+      if (uid) {
+        await Promise.all([fetchCart(uid), fetchFavourites(uid)]);
+      }
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
-  const updateQuantity = async (id, qty) => {
-    if (qty < 1) return;
+  const updateQuantity = async (itemId, qty) => {
+    if (qty < 1 || !userId) return;
     try {
-      await fetch(`/api/cart/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: qty }) });
-      await fetchCart();
-    } catch (err) { console.error(err); }
+      await fetch(`/api/user/${userId}/cart/${itemId}`, { 
+        method: 'PATCH', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ quantity: qty }) 
+      });
+      await fetchCart(userId);
+    } catch (err) { 
+      console.error('Error updating quantity:', err); 
+    }
   };
 
-  const deleteItem = async (id) => {
+  const deleteItem = async (itemId) => {
+    if (!userId) return;
     try {
-      await fetch(`/api/cart/${id}`, { method: 'DELETE' });
-      await fetchCart();
-    } catch (err) { console.error(err); }
+      await fetch(`/api/user/${userId}/cart/${itemId}`, { method: 'DELETE' });
+      await fetchCart(userId);
+    } catch (err) { 
+      console.error('Error deleting item:', err); 
+    }
   };
 
   const toggleFavourite = async (bookId) => {
-  const existing = favourites.find(f => f.book.book_id === bookId);
-  try {
-    if (existing) {
-      setFavourites(favs => favs.filter(f => f.book.book_id !== bookId));
-      await fetch(`/api/favourite/${bookId}`, { method: 'DELETE' });
-    } else {
-      const res = await fetch('/api/favourite', { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ book_id: bookId }) 
-      });
-      const newFav = await res.json();
-      setFavourites(favs => [ ...favs, newFav ]); 
+    if (!userId) return;
+    
+    const existing = favourites.find(f => f.book.book_id === bookId);
+    try {
+      if (existing) {
+        setFavourites(favs => favs.filter(f => f.book.book_id !== bookId));
+        await fetch(`/api/user/${userId}/favorites/${bookId}`, { method: 'DELETE' });
+      } else {
+        const res = await fetch(`/api/user/${userId}/favorites`, { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' }, 
+          body: JSON.stringify({ book_id: bookId }) 
+        });
+        const newFav = await res.json();
+        setFavourites(favs => [...favs, newFav]); 
+      }
+    } catch (err) { 
+      console.error('Error toggling favourite:', err); 
     }
-  } catch (err) { console.error(err); }
-};
+  };
+
   const isFavourited = (bookId) => favourites.some(f => f.book.book_id === bookId);
 
   if (loading) return <p>Loading cart...</p>;
+  if (!userId) return <p>Please log in to view your cart.</p>;
   if (cartItems.length === 0) return <p>Your cart is empty.</p>;
 
   const totalPrice = cartItems.reduce((sum, item) => sum + item.book.price * item.quantity, 0);
@@ -98,3 +141,4 @@ const Cart = () => {
 };
 
 export default Cart;
+

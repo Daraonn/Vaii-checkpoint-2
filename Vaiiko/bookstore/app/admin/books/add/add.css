@@ -63,6 +63,108 @@
   transform: scale(1.02);
 }
 
+
+.genres-panel {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 10px; 
+}
+
+.genre-label {
+  display: flex;
+  align-items: center; 
+  gap: 5px; 
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  font-size: 0.95rem;
+}
+
+.genre-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0; 
+}
+
+.image-upload-section {
+  margin: 20px 0;
+}
+
+.image-upload-section h4 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.image-drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.image-drop-zone:hover {
+  border-color: #4a90e2;
+  background-color: #f0f7ff;
+}
+
+.image-drop-zone.dragging {
+  border-color: #4a90e2;
+  background-color: #e3f2fd;
+  transform: scale(1.02);
+}
+
+.image-drop-zone svg {
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.image-drop-zone p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.image-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.image-preview {
+  max-width: 300px;
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.remove-image-btn {
+  padding: 10px 24px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.remove-image-btn:hover {
+  background-color: #cc0000;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .add-book-container {

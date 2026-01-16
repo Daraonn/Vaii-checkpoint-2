@@ -4,120 +4,140 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './favourite.css';
 
-const FAVOURITES_PER_PAGE = 5;
-
 const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [userId, setUserId] = useState(null);
 
- 
-  const fetchFavourites = async () => {
+  // Fetch user ID first
+  const fetchUserId = async () => {
     try {
-      const res = await fetch('/api/favourite', { cache: 'no-store' });
+      const res = await fetch('/api/token');
       const data = await res.json();
-      setFavourites(data);
+      if (data.user) {
+        setUserId(data.user.id);
+        return data.user.id;
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching user:', err);
+    }
+    return null;
+  };
+
+  // Fetch favourites using new API endpoint
+  const fetchFavourites = async (uid) => {
+    try {
+      const res = await fetch(`/api/user/${uid}/favorites`, { cache: 'no-store' });
+      const data = await res.json();
+      setFavourites(data.favorites || []);
+    } catch (err) {
+      console.error('Error fetching favourites:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFavourites();
+    const loadData = async () => {
+      const uid = await fetchUserId();
+      if (uid) {
+        await fetchFavourites(uid);
+      } else {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
-
+  // Toggle favourite
   const toggleFavourite = async (bookId) => {
+    if (!userId) return;
+
     const existing = favourites.find(f => f.book.book_id === bookId);
     try {
       if (existing) {
+        // Optimistically update UI
         setFavourites(favs => favs.filter(f => f.book.book_id !== bookId));
-        await fetch(`/api/favourite/${bookId}`, { method: 'DELETE' });
+        // DELETE /api/user/[id]/favorites/[bookId]
+        await fetch(`/api/user/${userId}/favorites/${bookId}`, { method: 'DELETE' });
       } else {
-        const res = await fetch('/api/favourite', { 
+        // Add to favourites
+        // POST /api/user/[id]/favorites
+        const res = await fetch(`/api/user/${userId}/favorites`, { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' }, 
           body: JSON.stringify({ book_id: bookId }) 
         });
         const newFav = await res.json();
-        setFavourites(favs => [ ...favs, newFav ]);
+        setFavourites(favs => [...favs, newFav]);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error toggling favourite:', err);
+      // Revert on error
+      fetchFavourites(userId);
     }
   };
 
-  const isFavourited = (bookId) => favourites.some(f => f.book.book_id === bookId);
+  if (loading) {
+    return (
+      <div className="favourite-page">
+        <p className="loading-text">Loading favourites...</p>
+      </div>
+    );
+  }
 
-  if (loading) return <p>Loading favourites...</p>;
-  if (favourites.length === 0) return <p>You have no favourites yet.</p>;
+  if (!userId) {
+    return (
+      <div className="favourite-page">
+        <p className="empty-text">Please log in to view your favourites.</p>
+      </div>
+    );
+  }
 
-
-  const totalPages = Math.ceil(favourites.length / FAVOURITES_PER_PAGE);
-  const startIndex = (currentPage - 1) * FAVOURITES_PER_PAGE;
-  const currentFavourites = favourites.slice(startIndex, startIndex + FAVOURITES_PER_PAGE);
+  if (favourites.length === 0) {
+    return (
+      <div className="favourite-page">
+        <h1 className="page-title">⭐ Favorites</h1>
+        <p className="empty-text">You have no favourites yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="favourite-page">
-      <h1>Your Favourites</h1>
-      <div className="favourite-list">
-        {currentFavourites.map(fav => (
-          <div key={fav.book.book_id} className="favourite-row">
-            
-            
-            <Link href={`/book/${fav.book.book_id}`}>
-              <img 
-                src={fav.book.image || '/placeholder.png'} 
-                alt={fav.book.name} 
-                className="favourite-row-img" 
-              />
-            </Link>
-
-            
-            <div className="favourite-row-info">
-              <Link href={`/book/${fav.book.book_id}`} className="favourite-book-link">
-                <h3>{fav.book.name}</h3>
-              </Link>
-              <p className="favourite-author">{fav.book.author}</p>
-            </div>
-
-            <div className="favourite-spacer" />
-
-            <div className="favourite-actions">
-              <button 
-                className="fav-btn" 
-                onClick={() => toggleFavourite(fav.book.book_id)}
-              >
+      <h1 className="page-title">⭐ Favorites</h1>
+      
+      <div className="favourite-grid">
+        {favourites.map(fav => (
+          <div key={fav.book.book_id} className="favourite-card">
+            <Link href={`/book/${fav.book.book_id}`} className="book-link">
+              <div className="book-image-container">
                 <img 
-                  src={isFavourited(fav.book.book_id) ? '/heart_full.png' : '/heart.png'} 
-                  alt="Favourite" 
+                  src={fav.book.image || '/placeholder.png'} 
+                  alt={fav.book.name} 
+                  className="book-image" 
                 />
-              </button>
-            </div>
+              </div>
+              
+              <div className="book-info">
+                <h3 className="book-title">{fav.book.name}</h3>
+                <p className="book-author">BY {fav.book.author.toUpperCase()}</p>
+                {fav.book.year && (
+                  <p className="book-meta">{fav.book.year}</p>
+                )}
+              </div>
+            </Link>
+            
+            <button 
+              className="remove-fav-btn" 
+              onClick={() => toggleFavourite(fav.book.book_id)}
+              title="Remove from favorites"
+            >
+              ❌
+            </button>
           </div>
         ))}
       </div>
-
-
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button 
-            disabled={currentPage === 1} 
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Previous
-          </button>
-          <span>Page {currentPage} of {totalPages}</span>
-          <button 
-            disabled={currentPage === totalPages} 
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 };
