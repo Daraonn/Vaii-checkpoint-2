@@ -8,29 +8,28 @@ datasource db {
 }
 
 model User {
-  user_id         Int       @id @default(autoincrement())
-  name            String
-  email           String    @unique
-  password        String
-  isAdmin         Boolean   @default(false)
-  createdAt       DateTime  @default(now())
+  user_id          Int       @id @default(autoincrement())
+  name             String
+  email            String    @unique
+  password         String
+  isAdmin          Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  bio              String?
+  dateOfBirth      String?
+  title            String?
+  gender           String?
+  avatar           String?
   
-  // Profile fields
-  bio             String?
-  dateOfBirth     String?
-  title           String?
-  gender          String?
-  avatar          String?
-  
-  favouriteBooks  FavouriteBook[]
-  cartItems       CartItem[]
-  ratings         Rating[]
-  reviews         Review[]
-  reviewComments  ReviewComment[]
-  reviewLikes     ReviewLike[]
-  followers       Follow[] @relation("Following")
-  following       Follow[] @relation("Follower")
-
+  favouriteBooks   FavouriteBook[]
+  cartItems        CartItem[]
+  ratings          Rating[]
+  reviews          Review[]
+  reviewComments   ReviewComment[]
+  reviewLikes      ReviewLike[]
+  followers        Follow[] @relation("Following")
+  following        Follow[] @relation("Follower")
+  alertsReceived   Alert[] @relation("AlertsReceived")
+  alertsCreated    Alert[] @relation("AlertsCreated")
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
   blockedUsers     Block[]   @relation("BlockedUsers")
@@ -38,13 +37,13 @@ model User {
 }
 
 model Follow {
-  follow_id    Int      @id @default(autoincrement())
-  follower_id  Int
-  following_id Int
-  createdAt    DateTime @default(now())
+  follow_id       Int      @id @default(autoincrement())
+  follower_id     Int
+  following_id    Int
+  createdAt       DateTime @default(now())
   
-  follower     User @relation("Follower", fields: [follower_id], references: [user_id], onDelete: Cascade)
-  following    User @relation("Following", fields: [following_id], references: [user_id], onDelete: Cascade)
+  follower        User @relation("Follower", fields: [follower_id], references: [user_id], onDelete: Cascade)
+  following       User @relation("Following", fields: [following_id], references: [user_id], onDelete: Cascade)
   
   @@unique([follower_id, following_id])
   @@index([follower_id])
@@ -61,12 +60,14 @@ model Book {
 
   about           String     
   language        String     
-  year            Int         
+  year            Int 
+          
   favouritedBy    FavouriteBook[]
   cartItems       CartItem[]
   genres          BookGenre[]
   ratings         Rating[]
   reviews         Review[]
+  alerts          Alert[]
 }
 
 model FavouriteBook {
@@ -75,8 +76,8 @@ model FavouriteBook {
   book_id         Int
   addedAt         DateTime @default(now())
 
-  user User @relation(fields: [user_id], references: [user_id])
-  book Book @relation(fields: [book_id], references: [book_id])
+  user            User @relation(fields: [user_id], references: [user_id])
+  book            Book @relation(fields: [book_id], references: [book_id])
 
   @@unique([user_id, book_id])
 }
@@ -88,8 +89,8 @@ model CartItem {
   quantity        Int      @default(1)  
   addedAt         DateTime @default(now())
 
-  user User @relation(fields: [user_id], references: [user_id])
-  book Book @relation(fields: [book_id], references: [book_id])
+  user            User @relation(fields: [user_id], references: [user_id])
+  book            Book @relation(fields: [book_id], references: [book_id])
 
   @@unique([user_id, book_id]) 
 }
@@ -103,8 +104,8 @@ model Rating {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  book Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book            Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
 
   @@unique([user_id, book_id])
   @@index([book_id])
@@ -119,10 +120,11 @@ model Review {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user     User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  book     Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
-  comments ReviewComment[]
-  likes    ReviewLike[]
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book            Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  comments        ReviewComment[]
+  likes           ReviewLike[]
+  alerts          Alert[]
 
   @@unique([user_id, book_id])
   @@index([book_id])
@@ -137,9 +139,9 @@ model ReviewComment {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  review Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
-  user   User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-
+  review          Review @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  alerts          Alert[]
   @@index([review_id])
   @@index([user_id])
 }
@@ -170,7 +172,7 @@ model Genre {
   genre_id        Int    @id @default(autoincrement())
   name            String @unique
 
-  books    BookGenre[]
+  books           BookGenre[]
 }
 
 model BookGenre {
@@ -178,25 +180,25 @@ model BookGenre {
   book_id         Int
   genre_id        Int
 
-  book  Book  @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
-  genre Genre @relation(fields: [genre_id], references: [genre_id], onDelete: Cascade)
+  book            Book  @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  genre           Genre @relation(fields: [genre_id], references: [genre_id], onDelete: Cascade)
 
   @@unique([book_id, genre_id])
 }
 
 model Message {
-  message_id    Int       @id @default(autoincrement())
-  sender_id     Int
-  receiver_id   Int
-  content       String
-  is_deleted    Boolean   @default(false)
-  is_edited     Boolean   @default(false)
-  is_read       Boolean   @default(false)  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  message_id      Int       @id @default(autoincrement())
+  sender_id       Int
+  receiver_id     Int
+  content         String
+  is_deleted      Boolean   @default(false)
+  is_edited       Boolean   @default(false)
+  is_read         Boolean   @default(false)  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   
-  sender   User @relation("SentMessages", fields: [sender_id], references: [user_id], onDelete: Cascade)
-  receiver User @relation("ReceivedMessages", fields: [receiver_id], references: [user_id], onDelete: Cascade)
+  sender          User @relation("SentMessages", fields: [sender_id], references: [user_id], onDelete: Cascade)
+  receiver        User @relation("ReceivedMessages", fields: [receiver_id], references: [user_id], onDelete: Cascade)
   
   @@index([sender_id])
   @@index([receiver_id])
@@ -205,15 +207,43 @@ model Message {
 }
 
 model Block {
-  block_id    Int      @id @default(autoincrement())
-  blocker_id  Int
-  blocked_id  Int
-  createdAt   DateTime @default(now())
+  block_id        Int      @id @default(autoincrement())
+  blocker_id      Int
+  blocked_id      Int
+  createdAt       DateTime @default(now())
   
-  blocker User @relation("BlockedUsers", fields: [blocker_id], references: [user_id], onDelete: Cascade)
-  blocked User @relation("BlockedBy", fields: [blocked_id], references: [user_id], onDelete: Cascade)
+  blocker         User @relation("BlockedUsers", fields: [blocker_id], references: [user_id], onDelete: Cascade)
+  blocked         User @relation("BlockedBy", fields: [blocked_id], references: [user_id], onDelete: Cascade)
   
   @@unique([blocker_id, blocked_id])
   @@index([blocker_id])
   @@index([blocked_id])
+}
+
+
+model Alert {
+  alert_id      Int       @id @default(autoincrement())
+  user_id       Int
+  actor_id      Int
+  type          AlertType
+  review_id     Int?
+  comment_id    Int?
+  book_id       Int?
+  is_read       Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  
+  user          User          @relation("AlertsReceived", fields: [user_id], references: [user_id], onDelete: Cascade)
+  actor         User          @relation("AlertsCreated", fields: [actor_id], references: [user_id], onDelete: Cascade)
+  review        Review?       @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
+  comment       ReviewComment? @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
+  book          Book?         @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  
+  @@index([user_id, is_read])
+  @@index([user_id, createdAt])
+}
+
+enum AlertType {
+  FOLLOWING_REVIEWED
+  FOLLOWING_COMMENTED
+  COMMENT_ON_YOUR_REVIEW
 }
