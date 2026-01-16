@@ -28,7 +28,7 @@ async function getUserIdFromToken() {
 
 export async function POST(request, { params }) {
   try {
-    const { id: reviewId } = await params;  // ✅ FIXED - await the destructured params
+    const { id: reviewId } = await params;  
     const userId = await getUserIdFromToken();
 
     if (!userId) {

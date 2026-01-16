@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { 
+  createFollowingCommentAlert, 
+  createCommentOnReviewAlert 
+} from '../../../../lib/alertHelpers';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -28,7 +32,7 @@ async function getUserIdFromToken() {
 
 export async function POST(request, { params }) {
   try {
-    const { id: reviewId } = await params;  // ✅ FIXED - await the destructured params
+    const { id: reviewId } = await params;  
     const userId = await getUserIdFromToken();
     
     if (!userId) {
@@ -63,6 +67,24 @@ export async function POST(request, { params }) {
         }
       }
     });
+
+    
+    const review = await prisma.review.findUnique({
+      where: { review_id: parseInt(reviewId) },
+      select: { 
+        user_id: true,
+        book_id: true 
+      }
+    });
+
+    
+    if (review) {
+      
+      await createFollowingCommentAlert(userId, comment.comment_id, parseInt(reviewId));
+      
+      
+      await createCommentOnReviewAlert(userId, comment.comment_id, parseInt(reviewId), review.user_id);
+    }
 
     return new Response(
       JSON.stringify(comment), 

@@ -222,15 +222,15 @@ model Block {
 
 
 model Alert {
-  alert_id      Int       @id @default(autoincrement())
-  user_id       Int
-  actor_id      Int
-  type          AlertType
-  review_id     Int?
-  comment_id    Int?
-  book_id       Int?
-  is_read       Boolean   @default(false)
-  createdAt     DateTime  @default(now())
+  alert_id       Int       @id @default(autoincrement())
+  user_id        Int
+  actor_id       Int
+  type           AlertType
+  review_id      Int?
+  comment_id     Int?
+  book_id        Int?
+  is_read        Boolean   @default(false)
+  createdAt      DateTime  @default(now())
   
   user          User          @relation("AlertsReceived", fields: [user_id], references: [user_id], onDelete: Cascade)
   actor         User          @relation("AlertsCreated", fields: [actor_id], references: [user_id], onDelete: Cascade)

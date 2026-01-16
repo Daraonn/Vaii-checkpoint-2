@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { createFollowingReviewAlert } from '../../../../lib/alertHelpers';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -22,7 +23,7 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET - Fetch all reviews by a user
+
 export async function GET(req, context) {
   const { params } = context;
   const resolvedParams = await params;
@@ -77,7 +78,7 @@ export async function GET(req, context) {
   }
 }
 
-// POST - Create or update a review
+
 export async function POST(req, context) {
   try {
     const { params } = context;
@@ -166,6 +167,7 @@ export async function POST(req, context) {
           }
         },
       });
+      await createFollowingReviewAlert(authenticatedUserId, review.review_id, review.book_id);
     }
 
     console.log('Review saved successfully:', review.review_id);
