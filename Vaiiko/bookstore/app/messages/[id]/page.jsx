@@ -36,6 +36,7 @@ const MessagesPage = () => {
     if (partnerId) {
       fetchMessages();
       fetchPartnerInfo();
+      markMessagesAsRead();
       const interval = setInterval(fetchMessages, 3000);
       return () => clearInterval(interval);
     }
@@ -93,6 +94,18 @@ const MessagesPage = () => {
       }
     } catch (err) {
       console.error('Error fetching messages:', err);
+    }
+  };
+
+  const markMessagesAsRead = async () => {
+    if (!partnerId) return;
+    
+    try {
+      await fetch(`/api/messages/${partnerId}/read`, {
+        method: 'POST'
+      });
+    } catch (err) {
+      console.error('Error marking messages as read:', err);
     }
   };
 

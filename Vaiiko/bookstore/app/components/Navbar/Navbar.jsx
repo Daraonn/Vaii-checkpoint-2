@@ -11,6 +11,7 @@ export default function Navbar() {
   const userContext = useUser();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const dropdownRef = useRef(null);
 
   if (!userContext) return null;
@@ -33,7 +34,30 @@ export default function Navbar() {
     fetchUser();
   }, [setUser]);
 
-  // Close dropdown on outside click
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch('/api/messages/unreadCount');
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadMessages(data.count || 0);
+        }
+      } catch (err) {
+        console.error('Error fetching unread count:', err);
+      }
+    };
+
+    fetchUnreadCount();
+    
+    const interval = setInterval(fetchUnreadCount, 300);
+    
+    return () => clearInterval(interval);
+  }, [user]);
+
+
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -87,12 +111,27 @@ export default function Navbar() {
       <div className="navbar-right">
         {user ? (
           <>
-            <Link href="/favourite" className="navbar-favourite-link">
-              <div className="navbar-favourite">
+            <Link href="/messages" className="navbar-messages-link">
+              <div className="navbar-messages">
                 <img
-                  src="/heart.png"
-                  alt="Favourites"
-                  className="navbar-favourite-img"
+                  src="/mail-navbar.png"
+                  alt="Messages"
+                  className="navbar-messages-img"
+                />
+                {unreadMessages > 0 && (
+                  <span className="navbar-notification-badge">
+                    {unreadMessages > 99 ? '99+' : unreadMessages}
+                  </span>
+                )}
+              </div>
+            </Link>
+
+            <Link href="/alerts" className="navbar-alerts-link">
+              <div className="navbar-alerts">
+                <img
+                  src="/alert-bell.png"
+                  alt="Alerts"
+                  className="navbar-alerts-img"
                 />
               </div>
             </Link>
@@ -107,7 +146,7 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* PROFILE + DROPDOWN */}
+            
             <div className="navbar-profile-wrapper" ref={dropdownRef}>
               <div
                 className="navbar-profile-trigger"
@@ -149,6 +188,29 @@ export default function Navbar() {
                     <span className="dropdown-icon">📝</span>
                     My Reviews
                   </div>
+
+                  <Link
+                    href="/messages"
+                    className="navbar-dropdown-item"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="dropdown-icon">💬</span>
+                    Messages
+                    {unreadMessages > 0 && (
+                      <span className="dropdown-notification-badge">
+                        {unreadMessages}
+                      </span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href="/alerts"
+                    className="navbar-dropdown-item"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="dropdown-icon">🔔</span>
+                    Alerts
+                  </Link>
 
                   <div
                     className="navbar-dropdown-item"

@@ -191,6 +191,7 @@ model Message {
   content       String
   is_deleted    Boolean   @default(false)
   is_edited     Boolean   @default(false)
+  is_read       Boolean   @default(false)  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
@@ -200,6 +201,7 @@ model Message {
   @@index([sender_id])
   @@index([receiver_id])
   @@index([createdAt])
+  @@index([receiver_id, is_read])  
 }
 
 model Block {
