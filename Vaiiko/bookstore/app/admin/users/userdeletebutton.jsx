@@ -1,6 +1,7 @@
 
 'use client';
 import React from 'react';
+import './userdeletebutton.css';
 
 export default function DeleteUserButton({ userId }) {
   const handleDelete = async () => {

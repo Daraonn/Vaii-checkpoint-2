@@ -85,58 +85,159 @@ export default function EditUserPage() {
   };
 
   return (
-    <div className="edit-user-container">
-  <h1>Edit User</h1>
+    <div className="edit-user-page">
+      <div className="edit-user-container">
+        {/* Header */}
+        <button className="back-button" onClick={() => router.push("/admin/users")}>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Users
+        </button>
 
-  {msg && (
-    <p className={msg.includes("successfully") ? "success-msg" : "error-msg"}>
-      {msg}
-    </p>
-  )}
+        <h1>Edit User</h1>
+        <p className="subtitle">Update user information and permissions</p>
 
-  <form onSubmit={submit} className="edit-user-form">
-    <input
-      name="name"
-      type="text"
-      value={user.name}
-      onChange={handleChange}
-      placeholder="User Name"
-      required
-    />
-    <input
-      name="email"
-      type="email"
-      value={user.email}
-      onChange={handleChange}
-      placeholder="Email"
-      required
-    />
-    <input
-      name="password1"
-      value={password1}
-      onChange={(e) => setPassword1(e.target.value)}
-      placeholder="New Password (leave blank to keep current)"
-      type="password"
-    />
-    <input
-      name="password2"
-      value={password2}
-      onChange={(e) => setPassword2(e.target.value)}
-      placeholder="Confirm New Password"
-      type="password"
-    />
-    <label>
-      Admin User
-      <input
-        type="checkbox"
-        name="isAdmin"
-        checked={user.isAdmin}
-        onChange={handleChange}
-      />
-    </label>
-    <button type="submit">Save Changes</button>
-  </form>
-</div>
-    
+        {/* Success/Error Message */}
+        {msg && (
+          <div className={msg.includes("successfully") ? "success-message" : "error-message"}>
+            <span>{msg}</span>
+          </div>
+        )}
+
+        <div className="edit-user-grid">
+          {/* Left Column - User Avatar */}
+          <div className="card user-avatar-card">
+            <h2>User Avatar</h2>
+            <div className="avatar-preview">
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.name} className="avatar-image" />
+              ) : (
+                <div className="avatar-placeholder">
+                  {user.name?.charAt(0).toUpperCase() || 'U'}
+                </div>
+              )}
+            </div>
+            <div className="user-quick-info">
+              <div className="info-item">
+                <span className="info-label">User ID</span>
+                <span className="info-value">#{user.user_id}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Role</span>
+                <span className={`role-badge ${user.isAdmin ? 'admin' : 'user'}`}>
+                  {user.isAdmin ? 'Administrator' : 'Regular User'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Form Fields */}
+          <div>
+            {/* Basic Information */}
+            <div className="card form-section">
+              <h2>Basic Information</h2>
+
+              <div className="form-group">
+                <label className="form-label">Full Name *</label>
+                <input
+                  name="name"
+                  type="text"
+                  value={user.name}
+                  onChange={handleChange}
+                  className="form-input"
+                  placeholder="Enter full name"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Email Address *</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={user.email}
+                  onChange={handleChange}
+                  className="form-input"
+                  placeholder="user@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Security Settings */}
+            <div className="card form-section">
+              <h2>Security Settings</h2>
+              <p className="section-description">Leave password fields empty to keep the current password</p>
+
+              <div className="form-group">
+                <label className="form-label">New Password</label>
+                <input
+                  name="password1"
+                  type="password"
+                  value={password1}
+                  onChange={(e) => setPassword1(e.target.value)}
+                  className="form-input"
+                  placeholder="Enter new password (min. 8 characters)"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Confirm New Password</label>
+                <input
+                  name="password2"
+                  type="password"
+                  value={password2}
+                  onChange={(e) => setPassword2(e.target.value)}
+                  className="form-input"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+
+            {/* Permissions */}
+            <div className="card form-section">
+              <h2>Permissions</h2>
+              
+              <div className="permission-toggle">
+                <div className="permission-info">
+                  <span className="permission-title">Administrator Access</span>
+                  <span className="permission-description">
+                    Grant this user full access to admin panel and management features
+                  </span>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    name="isAdmin"
+                    checked={user.isAdmin}
+                    onChange={handleChange}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="action-buttons">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => router.push("/admin/users")}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submit}
+                className="btn btn-primary"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
