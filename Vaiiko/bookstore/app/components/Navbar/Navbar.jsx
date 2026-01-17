@@ -103,7 +103,7 @@ export default function Navbar() {
 
   const handleAlertModalClose = () => {
     setShowAlertModal(false);
-   
+    // Refresh unread count after closing modal
     if (user) {
       fetch('/api/alerts/unreadCount')
         .then(res => res.json())
@@ -296,11 +296,43 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <Link href="/login" className="navbar-login-link">
-              <div className="navbar-login">
-                <img src="/login-picture.png" alt="Login" />
-              </div>
-            </Link>
+            <>
+              <Link href="/login" className="navbar-messages-link">
+                <div className="navbar-messages">
+                  <img
+                    src="/mail-navbar.png"
+                    alt="Messages"
+                    className="navbar-messages-img"
+                  />
+                </div>
+              </Link>
+
+              <Link href="/login" className="navbar-alerts-link">
+                <div className="navbar-alerts">
+                  <img
+                    src="/alert-bell.png"
+                    alt="Alerts"
+                    className="navbar-alerts-img"
+                  />
+                </div>
+              </Link>
+
+              <Link href="/cart" className="navbar-cart-link">
+                <div className="navbar-cart">
+                  <img
+                    src="/cart.png"
+                    alt="Cart"
+                    className="navbar-cart-img"
+                  />
+                </div>
+              </Link>
+
+              <Link href="/login" className="navbar-login-link">
+                <div className="navbar-login">
+                  <img src="/login-picture.png" alt="Login" />
+                </div>
+              </Link>
+            </>
           )}
         </div>
       </div>

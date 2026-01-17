@@ -20,12 +20,13 @@ export default function AddBook() {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genres, setGenres] = useState([]);
   const [msg, setMsg] = useState("");
+  const [msgType, setMsgType] = useState(""); // 'success' or 'error'
   const [imagePreview, setImagePreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const fileInputRef = useRef(null);
 
-  // Fetch all genres
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -58,15 +59,13 @@ export default function AddBook() {
   const uploadImage = async (file) => {
     if (!file) return null;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
-      setMsg("Please upload a valid image file");
+      showMessage("Please upload a valid image file", "error");
       return null;
     }
 
-    // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
-      setMsg("Image size should be less than 5MB");
+      showMessage("Image size should be less than 5MB", "error");
       return null;
     }
 
@@ -84,10 +83,10 @@ export default function AddBook() {
       if (!res.ok) throw new Error(data.error || "Upload failed");
 
       setIsUploading(false);
-      return data.url; // Assumes your API returns { url: "..." }
+      return data.url;
     } catch (err) {
       console.error(err);
-      setMsg("Failed to upload image: " + err.message);
+      showMessage("Failed to upload image: " + err.message, "error");
       setIsUploading(false);
       return null;
     }
@@ -136,6 +135,15 @@ export default function AddBook() {
     }
   };
 
+  const showMessage = (text, type) => {
+    setMsg(text);
+    setMsgType(type);
+    setTimeout(() => {
+      setMsg("");
+      setMsgType("");
+    }, 5000);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setMsg("");
@@ -150,7 +158,7 @@ export default function AddBook() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add book");
 
-      setMsg("Book added successfully!");
+      showMessage("✓ Book added successfully!", "success");
       setBook({
         name: "",
         author: "",
@@ -163,169 +171,368 @@ export default function AddBook() {
       });
       setSelectedGenres([]);
       setImagePreview(null);
+      setCurrentStep(1);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     } catch (err) {
       console.error(err);
-      setMsg(err.message);
+      showMessage("✗ " + err.message, "error");
     }
   };
 
+  const isStep1Valid = book.name && book.author && book.ISBN;
+  const isStep2Valid = book.price && book.year && book.language;
+  const isStep3Valid = selectedGenres.length > 0;
+
   return (
-    <div className="add-book-container">
-      <h1>Add Book</h1>
-
-      {msg && (
-        <p style={{ color: msg.includes("successfully") ? "green" : "red" }}>
-          {msg}
-        </p>
-      )}
-
-      <form onSubmit={submit} className="add-book-form">
-        <input
-          name="name"
-          placeholder="Book Name"
-          value={book.name}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="author"
-          placeholder="Author"
-          value={book.author}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="price"
-          type="number"
-          placeholder="Price"
-          value={book.price}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="ISBN"
-          placeholder="ISBN"
-          value={book.ISBN}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="language"
-          placeholder="Language"
-          value={book.language}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="year"
-          type="number"
-          placeholder="Publication Year"
-          value={book.year}
-          onChange={handleChange}
-          required
-        />
-
-        {/* Image Upload Area */}
-        <div className="image-upload-section">
-          <h4>Book Cover Image</h4>
-          
-          {!imagePreview ? (
-            <div
-              className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
-              onDrop={handleImageDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {isUploading ? (
-                <p>Uploading...</p>
-              ) : (
-                <>
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <p>Drag & drop an image here</p>
-                  <p style={{ fontSize: "0.9rem", color: "#666" }}>
-                    or click to browse
-                  </p>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="image-preview-container">
-              <img src={imagePreview} alt="Preview" className="image-preview" />
-              <button
-                type="button"
-                onClick={removeImage}
-                className="remove-image-btn"
-              >
-                Remove Image
-              </button>
-            </div>
-          )}
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelect}
-            style={{ display: "none" }}
-          />
+    <div className="add-book-page">
+      <div className="add-book-container">
+        <div className="page-header">
+          <h1>Add New Book</h1>
+          <p className="page-subtitle">Fill in the details to add a new book to the store</p>
         </div>
 
-        <textarea
-          name="about"
-          placeholder="About the book"
-          value={book.about}
-          onChange={handleChange}
-          required
-          style={{
-            padding: "12px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            minHeight: "100px",
-            fontSize: "1rem",
-          }}
-        />
+        {msg && (
+          <div className={`message-banner ${msgType}`}>
+            {msg}
+          </div>
+        )}
 
-        {/* Genres panel */}
-        <div className="add-book-genres">
-          <h4>Select Genres</h4>
-          <div className="genres-panel">
-            {genres.map((genre) => (
-              <label key={genre.genre_id} className="genre-label">
-                <input
-                  type="checkbox"
-                  checked={selectedGenres.includes(genre.genre_id)}
-                  onChange={() => handleGenreToggle(genre.genre_id)}
-                />
-                {genre.name}
-              </label>
-            ))}
+        
+        <div className="progress-steps">
+          <div className={`step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
+            <div className="step-number">1</div>
+            <span className="step-label">Basic Info</span>
+          </div>
+          <div className="step-line"></div>
+          <div className={`step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>
+            <div className="step-number">2</div>
+            <span className="step-label">Details</span>
+          </div>
+          <div className="step-line"></div>
+          <div className={`step ${currentStep >= 3 ? 'active' : ''} ${currentStep > 3 ? 'completed' : ''}`}>
+            <div className="step-number">3</div>
+            <span className="step-label">Genres & Image</span>
+          </div>
+          <div className="step-line"></div>
+          <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>
+            <div className="step-number">4</div>
+            <span className="step-label">Review</span>
           </div>
         </div>
 
-        <button type="submit" disabled={isUploading}>
-          {isUploading ? "Uploading..." : "Add Book"}
-        </button>
-      </form>
+        <form onSubmit={submit} className="add-book-form">
+          
+          {currentStep === 1 && (
+            <div className="form-section">
+              <h2 className="section-title">📚 Basic Information</h2>
+              
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Book Title *</label>
+                  <input
+                    name="name"
+                    placeholder="Enter book title"
+                    value={book.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Author *</label>
+                  <input
+                    name="author"
+                    placeholder="Enter author name"
+                    value={book.author}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group full-width">
+                  <label>ISBN *</label>
+                  <input
+                    name="ISBN"
+                    placeholder="Enter ISBN number"
+                    value={book.ISBN}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  disabled={!isStep1Valid}
+                  className="btn-primary"
+                >
+                  Next: Details →
+                </button>
+              </div>
+            </div>
+          )}
+
+          
+          {currentStep === 2 && (
+            <div className="form-section">
+              <h2 className="section-title">💰 Pricing & Publication Details</h2>
+              
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Price (USD) *</label>
+                  <input
+                    name="price"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={book.price}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Publication Year *</label>
+                  <input
+                    name="year"
+                    type="number"
+                    placeholder="YYYY"
+                    value={book.year}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Language *</label>
+                  <input
+                    name="language"
+                    placeholder="English, Spanish, etc."
+                    value={book.language}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group full-width">
+                  <label>Description *</label>
+                  <textarea
+                    name="about"
+                    placeholder="Write a brief description of the book..."
+                    value={book.about}
+                    onChange={handleChange}
+                    required
+                    rows={5}
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(1)}
+                  className="btn-secondary"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  disabled={!isStep2Valid || !book.about}
+                  className="btn-primary"
+                >
+                  Next: Genres & Image →
+                </button>
+              </div>
+            </div>
+          )}
+
+          
+          {currentStep === 3 && (
+            <div className="form-section">
+              <h2 className="section-title">🎨 Cover Image & Genres</h2>
+              
+              <div className="image-upload-section">
+                <label className="section-label">Book Cover Image</label>
+                
+                {!imagePreview ? (
+                  <div
+                    className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
+                    onDrop={handleImageDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {isUploading ? (
+                      <div className="uploading-state">
+                        <div className="spinner"></div>
+                        <p>Uploading...</p>
+                      </div>
+                    ) : (
+                      <>
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        <h3>Upload Book Cover</h3>
+                        <p>Drag & drop an image here, or click to browse</p>
+                        <span className="file-requirements">PNG, JPG up to 5MB</span>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="image-preview-container">
+                    <img src={imagePreview} alt="Preview" className="image-preview" />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="remove-image-btn"
+                    >
+                      ✕ Remove Image
+                    </button>
+                  </div>
+                )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  style={{ display: "none" }}
+                />
+              </div>
+
+              <div className="genres-section">
+                <label className="section-label">
+                  Select Genres * 
+                  <span className="selected-count">({selectedGenres.length} selected)</span>
+                </label>
+                <div className="genres-grid">
+                  {genres.map((genre) => (
+                    <label
+                      key={genre.genre_id}
+                      className={`genre-chip ${selectedGenres.includes(genre.genre_id) ? 'selected' : ''}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedGenres.includes(genre.genre_id)}
+                        onChange={() => handleGenreToggle(genre.genre_id)}
+                      />
+                      <span>{genre.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  className="btn-secondary"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(4)}
+                  disabled={!isStep3Valid}
+                  className="btn-primary"
+                >
+                  Review →
+                </button>
+              </div>
+            </div>
+          )}
+
+          
+          {currentStep === 4 && (
+            <div className="form-section">
+              <h2 className="section-title">✓ Review & Submit</h2>
+              
+              <div className="review-grid">
+                {imagePreview && (
+                  <div className="review-image">
+                    <img src={imagePreview} alt={book.name} />
+                  </div>
+                )}
+                
+                <div className="review-details">
+                  <div className="review-item">
+                    <span className="review-label">Title:</span>
+                    <span className="review-value">{book.name}</span>
+                  </div>
+                  
+                  <div className="review-item">
+                    <span className="review-label">Author:</span>
+                    <span className="review-value">{book.author}</span>
+                  </div>
+                  
+                  <div className="review-item">
+                    <span className="review-label">ISBN:</span>
+                    <span className="review-value">{book.ISBN}</span>
+                  </div>
+                  
+                  <div className="review-item">
+                    <span className="review-label">Price:</span>
+                    <span className="review-value">${book.price}</span>
+                  </div>
+                  
+                  <div className="review-item">
+                    <span className="review-label">Year:</span>
+                    <span className="review-value">{book.year}</span>
+                  </div>
+                  
+                  <div className="review-item">
+                    <span className="review-label">Language:</span>
+                    <span className="review-value">{book.language}</span>
+                  </div>
+                  
+                  <div className="review-item full-width">
+                    <span className="review-label">Description:</span>
+                    <span className="review-value">{book.about}</span>
+                  </div>
+                  
+                  <div className="review-item full-width">
+                    <span className="review-label">Genres:</span>
+                    <div className="review-genres">
+                      {selectedGenres.map((genreId) => {
+                        const genre = genres.find((g) => g.genre_id === genreId);
+                        return (
+                          <span key={genreId} className="review-genre-tag">
+                            {genre?.name}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  className="btn-secondary"
+                >
+                  ← Back to Edit
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="btn-success"
+                >
+                  {isUploading ? "Uploading..." : "✓ Add Book to Store"}
+                </button>
+              </div>
+            </div>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

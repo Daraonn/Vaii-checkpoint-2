@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import './cart.css';
 
 const Cart = () => {
@@ -9,14 +10,13 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
- 
   const fetchUserId = async () => {
     try {
       const res = await fetch('/api/token');
       const data = await res.json();
       if (data.user) {
-        setUserId(data.user.id);
-        return data.user.id;
+        setUserId(data.user.user_id);
+        return data.user.user_id;
       }
     } catch (err) {
       console.error('Error fetching user:', err);
@@ -102,43 +102,185 @@ const Cart = () => {
 
   const isFavourited = (bookId) => favourites.some(f => f.book.book_id === bookId);
 
-  if (loading) return <p>Loading cart...</p>;
-  if (!userId) return <p>Please log in to view your cart.</p>;
-  if (cartItems.length === 0) return <p>Your cart is empty.</p>;
+  if (loading) {
+    return (
+      <div className="cart-page">
+        <div className="cart-loading">Loading cart...</div>
+      </div>
+    );
+  }
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.book.price * item.quantity, 0);
+  if (!userId) {
+    return (
+      <div className="cart-page">
+        <div className="cart-empty">
+          <h2>Please log in to view your cart</h2>
+          <Link href="/login" className="continue-shopping-btn">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-page">
+        <div className="cart-empty">
+          <h2>Your cart is empty</h2>
+          <p>Add some books to get started!</p>
+          <Link href="/browse" className="continue-shopping-btn">
+            Continue Shopping
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.book.price * item.quantity, 0);
+  const totalItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const shipping = subtotal > 50 ? 0 : 5.99;
+  const tax = subtotal * 0.1;
+  const total = subtotal + shipping + tax;
 
   return (
     <div className="cart-page">
-      <h1>Your Cart</h1>
-      <div className="cart-list">
-        {cartItems.map(item => (
-          <div key={item.cart_item_id} className="cart-row">
-            <img src={item.book.image || '/placeholder.png'} alt={item.book.name} className="cart-row-img" />
-            <div className="cart-row-info">
-              <h3>{item.book.name}</h3>
-              <p className="cart-author">{item.book.author}</p>
-            </div>
-            <div className="cart-spacer" />
-            <div className="cart-qty">
-              <button className="qty-btn" onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}>-</button>
-              <span>{item.quantity}</span>
-              <button className="qty-btn" onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}>+</button>
-            </div>
-            <div className="cart-actions">
-              <button className="delete-btn" onClick={() => deleteItem(item.cart_item_id)}>Delete</button>
-              <button className="fav-btn" onClick={() => toggleFavourite(item.book.book_id)}>
-                <img src={isFavourited(item.book.book_id) ? '/heart_full.png' : '/heart.png'} alt="Favourite" />
-              </button>
-            </div>
-            <div className="cart-price">${item.book.price * item.quantity}</div>
+      <div className="cart-container">
+        <div className="cart-main">
+          <div className="cart-header">
+            <h1>Shopping Cart</h1>
+            <span className="cart-count">{totalItemCount} {totalItemCount === 1 ? 'item' : 'items'}</span>
           </div>
-        ))}
+
+          <div className="cart-items">
+            {cartItems.map(item => (
+              <div key={item.cart_item_id} className="cart-item">
+                <Link href={`/book/${item.book.book_id}`} className="cart-item-image">
+                  <img src={item.book.image || '/placeholder.png'} alt={item.book.name} />
+                </Link>
+
+                <div className="cart-item-details">
+                  <Link href={`/book/${item.book.book_id}`} className="cart-item-title">
+                    {item.book.name}
+                  </Link>
+                  <p className="cart-item-author">by {item.book.author}</p>
+                  <p className="cart-item-isbn">ISBN: {item.book.ISBN}</p>
+                  <p className="cart-item-unit-price">Unit price: ${item.book.price.toFixed(2)}</p>
+                  
+                  <div className="cart-item-actions-mobile">
+                    <button 
+                      className="cart-item-remove" 
+                      onClick={() => deleteItem(item.cart_item_id)}
+                    >
+                      Remove
+                    </button>
+                    <button 
+                      className={`cart-item-favorite ${isFavourited(item.book.book_id) ? 'active' : ''}`}
+                      onClick={() => toggleFavourite(item.book.book_id)}
+                    >
+                      {isFavourited(item.book.book_id) ? '❤️ Saved' : '🤍 Save for later'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cart-item-quantity">
+                  <label>Quantity</label>
+                  <div className="quantity-selector">
+                    <button 
+                      onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                    >
+                      −
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}>
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cart-item-price">
+                  <span className="price-label">Total</span>
+                  <span className="price-value">${(item.book.price * item.quantity).toFixed(2)}</span>
+                </div>
+
+                <button 
+                  className="cart-item-delete"
+                  onClick={() => deleteItem(item.cart_item_id)}
+                  title="Remove from cart"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <Link href="/browse" className="continue-shopping">
+            ← Continue Shopping
+          </Link>
+        </div>
+
+        <div className="cart-sidebar">
+          <div className="order-summary">
+            <h2>Order Summary</h2>
+            
+            <div className="summary-row">
+              <span>Subtotal ({totalItemCount} {totalItemCount === 1 ? 'item' : 'items'})</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+
+            <div className="summary-row">
+              <span>Shipping</span>
+              <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+            </div>
+
+            {shipping === 0 && (
+              <p className="free-shipping-notice">🎉 You've got free shipping!</p>
+            )}
+
+            {subtotal < 50 && (
+              <p className="free-shipping-notice">
+                Add ${(50 - subtotal).toFixed(2)} more for free shipping
+              </p>
+            )}
+
+            <div className="summary-row">
+              <span>Estimated Tax</span>
+              <span>${tax.toFixed(2)}</span>
+            </div>
+
+            <div className="summary-divider"></div>
+
+            <div className="summary-row summary-total">
+              <span>Total</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
+
+            <Link href="/checkout" className="checkout-btn">
+              Proceed to Checkout
+            </Link>
+
+            <div className="payment-methods">
+              <p>We accept:</p>
+              <div className="payment-icons">
+                💳 💵 🏦
+              </div>
+            </div>
+          </div>
+
+          <div className="cart-benefits">
+            <h3>Why shop with us?</h3>
+            <ul>
+              <li>📦 Free shipping on orders over $50</li>
+              <li>🔄 30-day return policy</li>
+              <li>🔒 Secure checkout</li>
+              <li>⚡ Fast delivery</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <h2 className="cart-total">Total: ${totalPrice}</h2>
     </div>
   );
 };
 
 export default Cart;
-

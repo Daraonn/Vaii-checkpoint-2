@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -182,149 +181,216 @@ export default function EditBook() {
 
   return (
     <div className="edit-book-container">
-      <h1>Edit Book</h1>
+      <div>
+        {/* Header */}
+        <button className="back-button" onClick={() => router.push("/admin/books")}>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Books
+        </button>
 
-      {msg && <p style={{ color: msg.includes("successfully") ? "green" : "red" }}>{msg}</p>}
+        <h1>Edit Book</h1>
+        <p className="subtitle">Update book information and details</p>
 
-      <form onSubmit={submit} className="edit-book-form">
-        <input
-          name="name"
-          value={book.name}
-          onChange={handleChange}
-          placeholder="Book Name"
-          required
-        />
-        <input
-          name="price"
-          type="number"
-          value={book.price}
-          onChange={handleChange}
-          placeholder="Price"
-          required
-        />
-        <input
-          name="author"
-          value={book.author}
-          onChange={handleChange}
-          placeholder="Author"
-          required
-        />
-        <input
-          name="ISBN"
-          value={book.ISBN}
-          onChange={handleChange}
-          placeholder="ISBN"
-          required
-        />
-        <input
-          name="language"
-          value={book.language}
-          onChange={handleChange}
-          placeholder="Language"
-          required
-        />
-        <input
-          name="year"
-          type="number"
-          value={book.year}
-          onChange={handleChange}
-          placeholder="Publication Year"
-          required
-        />
+        {/* Success/Error Message */}
+        {msg && (
+          <div className={msg.includes("successfully") ? "success-message" : "error-message"}>
+            <span>{msg}</span>
+          </div>
+        )}
 
-        {/* Image Upload Area */}
-        <div className="image-upload-section">
-          <h4>Book Cover Image</h4>
-          
-          {!imagePreview ? (
-            <div
-              className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
-              onDrop={handleImageDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {isUploading ? (
-                <p>Uploading...</p>
-              ) : (
-                <>
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <p>Drag & drop an image here</p>
-                  <p style={{ fontSize: "0.9rem", color: "#666" }}>
-                    or click to browse
-                  </p>
-                </>
-              )}
+        <div className="edit-book-grid">
+          {/* Left Column - Image Upload */}
+          <div className="card image-upload-card">
+            <h2>Book Cover</h2>
+
+            {!imagePreview ? (
+              <div
+                className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
+                onDrop={handleImageDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {isUploading ? (
+                  <p>Uploading...</p>
+                ) : (
+                  <>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <p>Drop image here</p>
+                    <p>or click to browse</p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="image-preview-container">
+                <img src={imagePreview} alt="Preview" className="image-preview" />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="remove-image-btn"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          {/* Right Column - Form Fields */}
+          <div>
+            {/* Basic Information */}
+            <div className="card form-section">
+              <h2>Basic Information</h2>
+
+              <div className="form-group">
+                <label className="form-label">Book Title *</label>
+                <input
+                  name="name"
+                  value={book.name}
+                  onChange={handleChange}
+                  className="form-input"
+                  placeholder="Enter book title"
+                  required
+                />
+              </div>
+
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label className="form-label">Author *</label>
+                  <input
+                    name="author"
+                    value={book.author}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Author name"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Price *</label>
+                  <div className="price-input-wrapper">
+                    <span className="currency-symbol">$</span>
+                    <input
+                      name="price"
+                      type="number"
+                      step="0.01"
+                      value={book.price}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-grid-3">
+                <div className="form-group">
+                  <label className="form-label">ISBN *</label>
+                  <input
+                    name="ISBN"
+                    value={book.ISBN}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="ISBN"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Language *</label>
+                  <input
+                    name="language"
+                    value={book.language}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Language"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Year *</label>
+                  <input
+                    name="year"
+                    type="number"
+                    value={book.year}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="2024"
+                    required
+                  />
+                </div>
+              </div>
             </div>
-          ) : (
-            <div className="image-preview-container">
-              <img src={imagePreview} alt="Preview" className="image-preview" />
+
+            {/* Description */}
+            <div className="card form-section">
+              <h2>Description</h2>
+              <textarea
+                name="about"
+                value={book.about}
+                onChange={handleChange}
+                rows={6}
+                className="form-textarea"
+                placeholder="Enter book description..."
+                required
+              />
+              <p className="character-count">{book.about.length} characters</p>
+            </div>
+
+            {/* Genres */}
+            <div className="card form-section">
+              <h2>Genres</h2>
+              <div className="genres-container">
+                {genres.map((genre) => (
+                  <button
+                    key={genre.genre_id}
+                    type="button"
+                    onClick={() => handleGenreToggle(genre.genre_id)}
+                    className={`genre-tag ${selectedGenres.includes(genre.genre_id) ? "selected" : ""}`}
+                  >
+                    {genre.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="action-buttons">
               <button
                 type="button"
-                onClick={removeImage}
-                className="remove-image-btn"
+                className="btn btn-secondary"
+                onClick={() => router.push("/admin/books")}
               >
-                Remove Image
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submit}
+                disabled={isUploading}
+                className="btn btn-primary"
+              >
+                {isUploading ? "Uploading..." : "Save Changes"}
               </button>
             </div>
-          )}
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelect}
-            style={{ display: "none" }}
-          />
-        </div>
-
-        <textarea
-          name="about"
-          placeholder="About the book"
-          value={book.about}
-          onChange={handleChange}
-          required
-          style={{
-            padding: "12px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            minHeight: "100px",
-            fontSize: "1rem",
-          }}
-        />
-
-        {/* Genres panel */}
-        <div className="edit-book-genres">
-          <h4>Select Genres</h4>
-          <div className="genres-panel">
-            {genres.map((genre) => (
-              <label key={genre.genre_id} className="genre-label">
-                <input
-                  type="checkbox"
-                  checked={selectedGenres.includes(genre.genre_id)}
-                  onChange={() => handleGenreToggle(genre.genre_id)}
-                />
-                {genre.name}
-              </label>
-            ))}
           </div>
         </div>
-
-        <button type="submit" disabled={isUploading}>
-          {isUploading ? "Uploading..." : "Save Changes"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

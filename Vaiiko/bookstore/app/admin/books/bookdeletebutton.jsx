@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import './bookdeletebutton.css';
 
 export default function DeleteButton({ bookId }) {
   const router = useRouter();
