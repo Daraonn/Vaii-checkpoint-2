@@ -1,5 +1,5 @@
 import React from 'react'
-import { ShopPage } from "./shop/page";
+import  ShopPage  from "./shop/page";
 
 const Home = () => {
   return (

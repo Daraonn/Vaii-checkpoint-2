@@ -14,6 +14,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadAlerts, setUnreadAlerts] = useState(0);
+  const [cartItemCount, setCartItemCount] = useState(0);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -64,12 +65,27 @@ export default function Navbar() {
       }
     };
 
+    const fetchCartCount = async () => {
+      try {
+        const res = await fetch(`/api/user/${user.user_id}/cart`);
+        if (res.ok) {
+          const data = await res.json();
+          const totalItems = data.reduce((sum, item) => sum + item.quantity, 0);
+          setCartItemCount(totalItems);
+        }
+      } catch (err) {
+        console.error('Error fetching cart count:', err);
+      }
+    };
+
     fetchUnreadCount();
     fetchUnreadAlerts();
+    fetchCartCount();
     
     const interval = setInterval(() => {
       fetchUnreadCount();
       fetchUnreadAlerts();
+      fetchCartCount();
     }, 30000);
     
     return () => clearInterval(interval);
@@ -182,6 +198,11 @@ export default function Navbar() {
                     alt="Cart"
                     className="navbar-cart-img"
                   />
+                  {cartItemCount > 0 && (
+                    <span className="navbar-notification-badge">
+                      {cartItemCount > 99 ? '99+' : cartItemCount}
+                    </span>
+                  )}
                 </div>
               </Link>
 

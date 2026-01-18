@@ -89,12 +89,54 @@ const Checkout = () => {
 
     setProcessing(true);
 
-    // Simulate order processing
-    setTimeout(() => {
-      alert('Order placed successfully! 🎉');
-      // Clear cart and redirect
-      router.push('/');
-    }, 2000);
+    try {
+      const subtotal = cartItems.reduce((sum, item) => sum + item.book.price * item.quantity, 0);
+      const shippingCost = formData.shippingMethod === 'express' ? 15.99 : (subtotal > 50 ? 0 : 5.99);
+      const tax = subtotal * 0.1;
+      const total = subtotal + shippingCost + tax;
+
+      const orderData = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+        country: formData.country,
+        subtotal: subtotal,
+        shippingCost: shippingCost,
+        tax: tax,
+        total: total,
+        shippingMethod: formData.shippingMethod
+      };
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: userId,
+          orderData: orderData,
+          cartItems: cartItems
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('Order placed successfully! 🎉');
+        router.push('/');
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   if (loading) {
