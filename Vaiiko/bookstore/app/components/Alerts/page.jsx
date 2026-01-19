@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -65,12 +64,19 @@ const AlertsPage = () => {
     }
   };
 
-  const handleAlertClick = (alert) => {
+ const handleAlertClick = (alert) => {
     if (!alert.is_read) {
       markAsRead(alert.alert_id);
     }
 
-    if (alert.type === 'FOLLOWING_REVIEWED' && alert.book_id) {
+  
+    if (alert.type === 'THREAD_COMMENT' && alert.thread_id) {
+      router.push(`/community/${alert.thread_id}`);
+    } else if (alert.type === 'FOLLOWED_USER_THREAD' && alert.thread_id) {
+      router.push(`/community/${alert.thread_id}`);
+    }
+    
+    else if (alert.type === 'FOLLOWING_REVIEWED' && alert.book_id) {
       router.push(`/book/${alert.book_id}`);
     } else if (alert.type === 'FOLLOWING_COMMENTED' && alert.review_id) {
       router.push(`/book/${alert.review?.book_id}#review-${alert.review_id}`);
@@ -79,31 +85,66 @@ const AlertsPage = () => {
     }
   };
 
-  const getAlertMessage = (alert) => {
-    switch (alert.type) {
-      case 'FOLLOWING_REVIEWED':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> reviewed{' '}
-            <strong>{alert.book?.name}</strong>
-          </>
-        );
-      case 'FOLLOWING_COMMENTED':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> commented on a review
-          </>
-        );
-      case 'COMMENT_ON_YOUR_REVIEW':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> commented on your review
-          </>
-        );
-      default:
-        return 'New notification';
-    }
-  };
+const getAlertMessage = (alert) => {
+  switch (alert.type) {
+    case 'THREAD_COMMENT':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on a thread you're following
+          {alert.thread?.title && (
+            <span className="alert-thread-title-inline">: "{alert.thread.title}"</span>
+          )}
+        </>
+      );
+    case 'FOLLOWED_USER_THREAD':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> created a new thread
+          {alert.thread?.title && (
+            <span className="alert-thread-title-inline">: "{alert.thread.title}"</span>
+          )}
+        </>
+      );
+    case 'FOLLOWING_REVIEWED':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> reviewed{' '}
+          <strong>{alert.book?.name}</strong>
+        </>
+      );
+    case 'FOLLOWING_COMMENTED':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on a review
+        </>
+      );
+    case 'COMMENT_ON_YOUR_REVIEW':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on your review
+        </>
+      );
+    default:
+      return 'New notification';
+  }
+};
+
+
+const getAlertIcon = (alert) => {
+  switch (alert.type) {
+    case 'THREAD_COMMENT':
+      return '💬';
+    case 'FOLLOWED_USER_THREAD':
+      return '📝';
+    case 'FOLLOWING_REVIEWED':
+      return '⭐';
+    case 'FOLLOWING_COMMENTED':
+    case 'COMMENT_ON_YOUR_REVIEW':
+      return '💭';
+    default:
+      return '🔔';
+  }
+};
 
   const getTimeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -169,6 +210,10 @@ const AlertsPage = () => {
                 className="alert-content"
                 onClick={() => handleAlertClick(alert)}
               >
+                <div className="alert-icon-container">
+                  <span className="alert-type-icon">{getAlertIcon(alert)}</span>
+                </div>
+
                 <div className="alert-avatar">
                   {alert.actor.avatar ? (
                     <img src={alert.actor.avatar} alt={alert.actor.name} />

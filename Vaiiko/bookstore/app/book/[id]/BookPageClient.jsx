@@ -8,6 +8,7 @@ import styles from "./book.module.css";
 export default function BookPageClient({ book }) {
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isFavorited, setIsFavorited] = useState(false);
   
@@ -45,6 +46,7 @@ export default function BookPageClient({ book }) {
         const data = await res.json();
         if (data.user) {
           setUserId(data.user.user_id);
+          setIsAdmin(data.user.isAdmin || false);
           
           const favRes = await fetch(`/api/user/${data.user.user_id}/favorites`);
           const favData = await favRes.json();
@@ -146,7 +148,6 @@ export default function BookPageClient({ book }) {
       return;
     }
 
-    // Auto-set status based on star rating if not already set
     let statusToSubmit = selectedStatus;
     if (!statusToSubmit && stars) {
       statusToSubmit = 'COMPLETED';
@@ -360,7 +361,61 @@ export default function BookPageClient({ book }) {
       console.error(err);
       setMessage("An error occurred.");
     }
-  };  
+  };
+
+  const adminDeleteReview = async (reviewId) => {
+    if (!isAdmin) return;
+
+    if (!confirm("Are you sure you want to delete this review as admin?")) return;
+
+    try {
+      const res = await fetch(`/api/admin/reviews/${reviewId}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        setMessage("✓ Review deleted by admin!");
+        setTimeout(() => setMessage(""), 3000);
+        
+        const reviewsRes = await fetch(`/api/books/${book.book_id}/reviews`);
+        const reviewsData = await reviewsRes.json();
+        setReviews(reviewsData.reviews || []);
+      } else {
+        const data = await res.json();
+        setMessage(data.error || "Failed to delete review");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("An error occurred.");
+    }
+  };
+
+  const adminDeleteComment = async (reviewId, commentId) => {
+    if (!isAdmin) return;
+
+    if (!confirm("Are you sure you want to delete this comment as admin?")) return;
+
+    try {
+      const res = await fetch(`/api/admin/comments/${commentId}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        setMessage("✓ Comment deleted by admin!");
+        setTimeout(() => setMessage(""), 3000);
+        
+        const reviewsRes = await fetch(`/api/books/${book.book_id}/reviews`);
+        const reviewsData = await reviewsRes.json();
+        setReviews(reviewsData.reviews || []);
+      } else {
+        const data = await res.json();
+        setMessage(data.error || "Failed to delete comment");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("An error occurred.");
+    }
+  };
 
   const toggleLike = async (reviewId, isLike) => {
     if (!userId) {
@@ -615,6 +670,15 @@ export default function BookPageClient({ book }) {
                           </div>
                         </div>
                       </div>
+                      {isAdmin && review.user_id !== userId && (
+                        <button 
+                          className={styles.adminDeleteBtn}
+                          onClick={() => adminDeleteReview(review.review_id)}
+                          title="Delete as admin"
+                        >
+                          Admin Delete
+                        </button>
+                      )}
                     </div>
                     
                     <p className={styles.reviewText}>{review.content}</p>
@@ -677,6 +741,15 @@ export default function BookPageClient({ book }) {
                                       className={styles.deleteCommentBtn}
                                       onClick={() => deleteComment(review.review_id, comment.comment_id)}
                                       title="Delete comment"
+                                    >
+                                      ×
+                                    </button>
+                                  )}
+                                  {isAdmin && userId !== comment.user.user_id && (
+                                    <button 
+                                      className={styles.adminDeleteCommentBtn}
+                                      onClick={() => adminDeleteComment(review.review_id, comment.comment_id)}
+                                      title="Delete as admin"
                                     >
                                       ×
                                     </button>

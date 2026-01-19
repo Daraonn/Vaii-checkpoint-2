@@ -86,7 +86,7 @@ export default function Navbar() {
       fetchUnreadCount();
       fetchUnreadAlerts();
       fetchCartCount();
-    }, 30000);
+    }, 3000);
     
     return () => clearInterval(interval);
   }, [user]);
@@ -145,6 +145,10 @@ export default function Navbar() {
 
           <Link href="/browse" className="navbar-menu-link">
             <div className="navbar-browse"><p>Browse</p></div>
+          </Link>
+
+          <Link href="/community" className="navbar-menu-link">
+            <div className="navbar-community"><p>Community</p></div>
           </Link>
 
           <div className="navbar-searchbar">

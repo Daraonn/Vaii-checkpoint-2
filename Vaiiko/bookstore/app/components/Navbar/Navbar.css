@@ -16,6 +16,7 @@
   align-items: center;
   gap: 30px;
   flex-wrap: wrap;
+  
 }
 
 .navbar-logo-link {
@@ -42,6 +43,7 @@
   margin: 0;
 }
 
+
 .navbar-searchbar {
   display: flex;
   align-items: center;
@@ -59,7 +61,8 @@
 
 .navbar-home,
 .navbar-browse,
-.navbar-admin {
+.navbar-admin,
+.navbar-community {
   color: #1a1a1a;
   display: flex;
   align-items: center;

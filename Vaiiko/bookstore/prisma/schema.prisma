@@ -35,6 +35,9 @@ model User {
   blockedUsers     Block[]   @relation("BlockedUsers")
   blockedBy        Block[]   @relation("BlockedBy")
   orders           Order[]
+  threads          Thread[]
+  threadComments   ThreadComment[]
+  threadFollows    ThreadFollow[]
 }
 
 model Follow {
@@ -288,6 +291,8 @@ model Alert {
   review_id      Int?
   comment_id     Int?
   book_id        Int?
+  thread_id      Int?           
+  thread_comment_id Int?        
   is_read        Boolean   @default(false)
   createdAt      DateTime  @default(now())
   
@@ -296,6 +301,8 @@ model Alert {
   review         Review?       @relation(fields: [review_id], references: [review_id], onDelete: Cascade)
   comment        ReviewComment? @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
   book           Book?         @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
+  thread         Thread?       @relation(fields: [thread_id], references: [thread_id], onDelete: Cascade)
+  threadComment  ThreadComment? @relation(fields: [thread_comment_id], references: [comment_id], onDelete: Cascade)
   
   @@index([user_id, is_read])
   @@index([user_id, createdAt])
@@ -305,4 +312,55 @@ enum AlertType {
   FOLLOWING_REVIEWED
   FOLLOWING_COMMENTED
   COMMENT_ON_YOUR_REVIEW
+  THREAD_COMMENT           
+  FOLLOWED_USER_THREAD     
+}
+
+
+model Thread {
+  thread_id       Int      @id @default(autoincrement())
+  user_id         Int
+  title           String
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  comments        ThreadComment[]
+  followers       ThreadFollow[]
+  alerts          Alert[]            
+  
+  @@index([user_id])
+  @@index([createdAt])
+}
+
+model ThreadComment {
+  comment_id      Int      @id @default(autoincrement())
+  thread_id       Int
+  user_id         Int
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  thread          Thread @relation(fields: [thread_id], references: [thread_id], onDelete: Cascade)
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  alerts          Alert[]              
+  
+  @@index([thread_id])
+  @@index([user_id])
+}
+
+
+model ThreadFollow {
+  follow_id       Int      @id @default(autoincrement())
+  user_id         Int
+  thread_id       Int
+  createdAt       DateTime @default(now())
+  
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  thread          Thread @relation(fields: [thread_id], references: [thread_id], onDelete: Cascade)
+  
+  @@unique([user_id, thread_id])
+  @@index([user_id])
+  @@index([thread_id])
 }

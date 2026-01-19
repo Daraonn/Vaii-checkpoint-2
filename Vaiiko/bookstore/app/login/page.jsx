@@ -41,7 +41,7 @@ const Login = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data?.error || 'Chyba pri prihlásení.');
+        throw new Error(data?.error || 'There was an issue with your log in.');
       }
       if (response.ok) { 
         const userData = await fetch('/api/token').then(res => res.json());
@@ -51,7 +51,7 @@ const Login = () => {
      
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Chyba pri prihlásení.');
+      setError(err.message || 'There was an issue with your log in.');
     } finally {
       setLoading(false);
     }
@@ -60,12 +60,12 @@ const Login = () => {
   return (
     <div className="login">
       <div className="login-container">
-        <h1>Prihlásiť sa</h1>
+        <h1>Log in</h1>
         <form onSubmit={handleSubmit} className="login-fields">
           <input
             type="text"
             name="emailOrName"
-            placeholder="Meno / E-mail"
+            placeholder="username / E-mail"
             value={formData.emailOrName}
             onChange={handleChange}
             required
@@ -73,16 +73,16 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            placeholder="Heslo"
+            placeholder="password"
             value={formData.password}
             onChange={handleChange}
             required
           />
           {error && <p className="error-message">{error}</p>}
-          <button type="submit" disabled={loading}>Pokračuj</button>
+          <button type="submit" disabled={loading}>Continue</button>
         </form>
         <p className="login-register">
-          Nemáte účet? Registrovať sa <Link href="/register"><span>tu</span></Link>
+          Dont have an accoumt? Register right <Link href="/register"><span>here</span></Link>
         </p>
       </div>
     </div>

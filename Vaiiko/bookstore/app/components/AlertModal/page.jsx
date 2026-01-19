@@ -1,4 +1,3 @@
-// File: components/AlertModal/AlertModal.js
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,7 +21,6 @@ export default function AlertModal({ isOpen, onClose }) {
       const res = await fetch('/api/alerts');
       if (res.ok) {
         const data = await res.json();
-        // Show only first 10 alerts in modal
         setAlerts((data.alerts || []).slice(0, 10));
       }
     } catch (err) {
@@ -62,7 +60,14 @@ export default function AlertModal({ isOpen, onClose }) {
     }
     onClose();
 
-    if (alert.type === 'FOLLOWING_REVIEWED' && alert.book_id) {
+    
+    if (alert.type === 'THREAD_COMMENT' && alert.thread_id) {
+      router.push(`/community/${alert.thread_id}`);
+    } else if (alert.type === 'FOLLOWED_USER_THREAD' && alert.thread_id) {
+      router.push(`/community/${alert.thread_id}`);
+    }
+    
+    else if (alert.type === 'FOLLOWING_REVIEWED' && alert.book_id) {
       router.push(`/book/${alert.book_id}`);
     } else if (alert.type === 'FOLLOWING_COMMENTED' && alert.review_id) {
       router.push(`/book/${alert.review?.book_id}#review-${alert.review_id}`);
@@ -77,28 +82,62 @@ export default function AlertModal({ isOpen, onClose }) {
   };
 
   const getAlertMessage = (alert) => {
+  switch (alert.type) {
+    case 'THREAD_COMMENT':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on a thread you're following
+          {alert.thread?.title && (
+            <span className="alert-thread-title"> "{alert.thread.title}"</span>
+          )}
+        </>
+      );
+    case 'FOLLOWED_USER_THREAD':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> created a new thread
+          {alert.thread?.title && (
+            <span className="alert-thread-title"> "{alert.thread.title}"</span>
+          )}
+        </>
+      );
+    case 'FOLLOWING_REVIEWED':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> reviewed{' '}
+          <strong>{alert.book?.name}</strong>
+        </>
+      );
+    case 'FOLLOWING_COMMENTED':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on a review
+        </>
+      );
+    case 'COMMENT_ON_YOUR_REVIEW':
+      return (
+        <>
+          <strong>{alert.actor.name}</strong> commented on your review
+        </>
+      );
+    default:
+      return 'New notification';
+  }
+};
+
+  const getAlertIcon = (alert) => {
     switch (alert.type) {
+      case 'THREAD_COMMENT':
+        return '💬';
+      case 'FOLLOWED_USER_THREAD':
+        return '📝';
       case 'FOLLOWING_REVIEWED':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> reviewed{' '}
-            <strong>{alert.book?.name}</strong>
-          </>
-        );
+        return '⭐';
       case 'FOLLOWING_COMMENTED':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> commented on a review
-          </>
-        );
       case 'COMMENT_ON_YOUR_REVIEW':
-        return (
-          <>
-            <strong>{alert.actor.name}</strong> commented on your review
-          </>
-        );
+        return '💭';
       default:
-        return 'New notification';
+        return '🔔';
     }
   };
 
@@ -141,6 +180,10 @@ export default function AlertModal({ isOpen, onClose }) {
                 className={`alert-modal-item ${!alert.is_read ? 'unread' : ''}`}
                 onClick={() => handleAlertClick(alert)}
               >
+                <div className="alert-modal-item-icon">
+                  {getAlertIcon(alert)}
+                </div>
+
                 <div className="alert-modal-item-avatar">
                   {alert.actor.avatar ? (
                     <img src={alert.actor.avatar} alt={alert.actor.name} />

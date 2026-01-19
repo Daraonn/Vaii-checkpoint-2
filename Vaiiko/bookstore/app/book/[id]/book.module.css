@@ -762,6 +762,143 @@
   color: #e74c3c;
 }
 
+.adminDeleteBtn {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.adminDeleteBtn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.adminDeleteBtn:active {
+  transform: translateY(0);
+}
+
+/* Admin Delete Buttons for Comments */
+.adminDeleteCommentBtn {
+  padding: 4px 8px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.adminDeleteCommentBtn:hover {
+  background-color: #c82333;
+  box-shadow: 0 1px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Regular User Delete Comment Button */
+.deleteCommentBtn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.2s ease;
+  line-height: 1;
+  margin-left: 8px;
+}
+
+.deleteCommentBtn:hover {
+  color: #dc3545;
+}
+
+/* Review Header Layout - to accommodate admin button */
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.reviewUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+/* Comment Header Layout */
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.commentAuthor:hover {
+  color: #0066cc;
+}
+
+/* User Delete Review Button Styling */
+.deleteReviewBtn {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteReviewBtn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+
+.reviewHeaderActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+
+@media (max-width: 768px) {
+  .adminDeleteBtn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .reviewHeader {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .reviewHeaderActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;

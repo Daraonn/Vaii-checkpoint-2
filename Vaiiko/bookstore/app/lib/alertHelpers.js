@@ -71,3 +71,62 @@ export async function createCommentOnReviewAlert(actorId, commentId, reviewId, r
     console.error('Error creating comment on review alert:', error);
   }
 }
+
+
+
+export async function createThreadCommentAlert(actorId, threadId, commentId) {
+  try {
+    const followers = await prisma.threadFollow.findMany({
+      where: { 
+        thread_id: threadId,
+        user_id: {
+          not: actorId 
+        }
+      },
+      select: { user_id: true }
+    });
+
+    const alerts = followers.map(follower => ({
+      user_id: follower.user_id,
+      actor_id: actorId,
+      type: 'THREAD_COMMENT',
+      thread_id: threadId,
+      thread_comment_id: commentId
+    }));
+
+    if (alerts.length > 0) {
+      await prisma.alert.createMany({ data: alerts });
+    }
+
+    return alerts.length;
+  } catch (error) {
+    console.error('Error creating thread comment alerts:', error);
+    throw error;
+  }
+}
+
+
+export async function createFollowingThreadAlert(actorId, threadId) {
+  try {
+    const followers = await prisma.follow.findMany({
+      where: { following_id: actorId },
+      select: { follower_id: true }
+    });
+
+    const alerts = followers.map(follower => ({
+      user_id: follower.follower_id,
+      actor_id: actorId,
+      type: 'FOLLOWED_USER_THREAD',
+      thread_id: threadId
+    }));
+
+    if (alerts.length > 0) {
+      await prisma.alert.createMany({ data: alerts });
+    }
+
+    return alerts.length;
+  } catch (error) {
+    console.error('Error creating following thread alerts:', error);
+    throw error;
+  }
+}

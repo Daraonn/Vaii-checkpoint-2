@@ -225,6 +225,35 @@
   background: #999;
 }
 
+
+
+.alert-modal-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 8px;
+}
+
+.alert-modal-item-message {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+  font-weight: normal;
+}
+
+.alert-thread-title {
+  display: inline;
+  margin-left: 4px;
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic;
+  font-weight: normal;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .alert-modal {

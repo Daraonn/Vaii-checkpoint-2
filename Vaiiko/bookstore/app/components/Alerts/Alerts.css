@@ -197,6 +197,36 @@
   border-color: #dc3545;
 }
 
+
+.alert-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.alert-type-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.alert-thread-title {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  font-weight: normal;
+}
+
+.alert-thread-title-inline {
+  margin-left: 4px;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  font-weight: normal;
+}
+
 @media (max-width: 768px) {
   .alerts-container {
     padding: 15px;
