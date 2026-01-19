@@ -45,9 +45,11 @@ export default function Searchbar() {
           value={query}
           onChange={handleChange}
         />
-        <button type="submit">Search</button>
+        <div className="button-wrapper">
+          <button type="submit" className="searchbar-search-button">Search</button>
+        </div>
       </form>
-
+      
       {query && (
         <div className="results">
           {results.length === 0 ? (

@@ -64,7 +64,7 @@ export default function ShopPage() {
       <section className="hero-banner">
         <div className="hero-overlay">
           <div className="hero-content">
-            <h1 className="hero-title">Welcome to Our Bookstore</h1>
+            <h1 className="hero-title">Welcome to Our BookShop</h1>
             <p className="hero-subtitle">Discover your next favorite book from our curated collection</p>
             <div className="hero-buttons">
               <Link href="/browse" className="btn-primary">Browse All Books</Link>

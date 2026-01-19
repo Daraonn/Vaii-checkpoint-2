@@ -151,16 +151,18 @@ export default function Navbar() {
             <div className="navbar-community"><p>Community</p></div>
           </Link>
 
-          <div className="navbar-searchbar">
-            <Searchbar />
-          </div>
-
           {user?.isAdmin && (
             <Link href="/admin/books" className="navbar-menu-link">
               <div className="navbar-admin"><p>Admin Panel</p></div>
             </Link>
           )}
         </div>
+
+          <div className="navbar-searchbar">
+            <Searchbar />
+          </div>
+
+          
 
         <div className="navbar-right">
           {user ? (
