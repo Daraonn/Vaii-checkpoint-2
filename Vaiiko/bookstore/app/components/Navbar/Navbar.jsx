@@ -240,7 +240,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => setOpen(false)}
                     >
-                      <span className="dropdown-icon">👤</span>
+                      <span className="dropdown-icon">
+                        <img
+                          src="/login-picture.png"
+                          alt="overview"
+                          className="navbar-cart-img"
+                        />    
+                        </span>
                       Profile
                     </Link>
 
@@ -250,7 +256,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => handleProfileNavigation('reviews')}
                     >
-                      <span className="dropdown-icon">📝</span>
+                      <span className="dropdown-icon">
+                        <img
+                          src="/search-data.png"
+                          alt="review"
+                          className="navbar-cart-img"
+                        />                                          
+                        </span>
                       My Reviews
                     </div>
 
@@ -259,7 +271,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => setOpen(false)}
                     >
-                      <span className="dropdown-icon">💬</span>
+                      <span className="dropdown-icon">
+                         <img
+                            src="/mail-navbar.png"
+                            alt="mail"
+                            className="navbar-cart-img"
+                          />
+                      </span>
                       Messages
                       {unreadMessages > 0 && (
                         <span className="dropdown-notification-badge">
@@ -273,7 +291,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => setOpen(false)}
                     >
-                      <span className="dropdown-icon">🔔</span>
+                      <span className="dropdown-icon">
+                         <img
+                            src="/alert-bell.png"
+                            alt="alert"
+                            className="navbar-cart-img"
+                          />
+                        </span>
                       Alerts
                       {unreadAlerts > 0 && (
                         <span className="dropdown-notification-badge">
@@ -286,7 +310,15 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => handleProfileNavigation('favorites')}
                     >
-                      <span className="dropdown-icon">⭐</span>
+                      <span className="dropdown-icon">
+
+                       <img
+                          src="/heart.png"
+                          alt="reccomended"
+                          className="navbar-cart-img"
+                        />
+
+                        </span>
                       My Favorites
                     </div>
 
@@ -294,7 +326,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => handleProfileNavigation('follows')}
                     >
-                      <span className="dropdown-icon">👥</span>
+                      <span className="dropdown-icon">
+                         <img
+                            src="/follow-us.png"
+                            alt="follows"
+                            className="navbar-cart-img"
+                          />
+                      </span>
                       Following
                     </div>
 
@@ -305,7 +343,15 @@ export default function Navbar() {
                       className="navbar-dropdown-item"
                       onClick={() => setOpen(false)}
                     >
-                      <span className="dropdown-icon">⚙️</span>
+                      <span className="dropdown-icon">
+                         <img
+                            src="/setting.png"
+                            alt="settings"
+                            className="navbar-cart-img"
+                          />
+                        
+                        
+                        </span>
                       Settings
                     </Link>
 
@@ -315,7 +361,13 @@ export default function Navbar() {
                       className="navbar-dropdown-item navbar-dropdown-logout"
                       onClick={handleLogout}
                     >
-                      <span className="dropdown-icon">🚪</span>
+                      <span className="dropdown-icon">
+                         <img
+                            src="/logout.png"
+                            alt="logout"
+                            className="navbar-cart-img"
+                          />
+                       </span>
                       Logout
                     </div>
                   </div>
