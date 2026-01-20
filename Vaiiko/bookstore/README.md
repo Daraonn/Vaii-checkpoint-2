@@ -147,4 +147,4 @@ The application is compatible with platforms such as **Vercel**, **Railway**, or
 
 ## License
 
-MIT
+
