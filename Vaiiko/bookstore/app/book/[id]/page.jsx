@@ -15,7 +15,14 @@ export default async function BookPage({ params }) {
 
   const book = await prisma.book.findUnique({
     where: { book_id: bookId },
-  });
+    include: {
+      genres: {
+        include: {
+          genre: true,
+        },
+      },
+    },
+  })
 
   if (!book) return <p>Book not found</p>;
 

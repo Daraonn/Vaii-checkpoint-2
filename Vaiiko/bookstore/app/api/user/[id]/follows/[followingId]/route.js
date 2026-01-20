@@ -22,11 +22,11 @@ async function getUserIdFromToken() {
   }
 }
 
-// DELETE - Unfollow a user
+
 export async function DELETE(req, context) {
   const { params } = context;
   const resolvedParams = await params;
-  const userId = Number(resolvedParams.id); // CHANGED from userId to id
+  const userId = Number(resolvedParams.id); 
   const followingId = Number(resolvedParams.followingId);
   const authenticatedUserId = await getUserIdFromToken();
 

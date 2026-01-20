@@ -12,7 +12,9 @@ export default function DeleteButton({ bookId }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/admin/books/${bookId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/books/${bookId}`,
+         { method: 'DELETE' }
+        );
       const data = await res.json();
 
       if (!res.ok) throw new Error(data?.error || 'Failed to delete book');

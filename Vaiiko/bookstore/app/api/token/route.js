@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Throw error if no secret is set
+
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in environment variables');
 }
@@ -23,7 +23,7 @@ export async function GET() {
       });
     }
 
-    // Verify token (this will throw if expired or invalid)
+    
     const payload = jwt.verify(token, JWT_SECRET);
 
     if (typeof payload !== 'object' || payload === null || !('user_id' in payload)) {
@@ -33,8 +33,7 @@ export async function GET() {
       });
     }
 
-    // ALWAYS fetch fresh user data from DB
-    // Never trust data from the token except user_id
+    
     const user = await prisma.user.findUnique({
       where: { user_id: payload.user_id },
       select: {

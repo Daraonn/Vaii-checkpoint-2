@@ -14,7 +14,7 @@ export async function GET(req) {
         name: true,
       },
       orderBy: {
-        name: "asc", // Optional: sorted alphabetically for UI
+        name: "asc",
       },
     });
 

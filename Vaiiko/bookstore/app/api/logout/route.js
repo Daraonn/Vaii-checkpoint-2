@@ -1,5 +1,4 @@
 export async function POST() {
-  // Build secure cookie deletion string
   const isProduction = process.env.NODE_ENV === 'production';
   const cookieOptions = [
     'token=',

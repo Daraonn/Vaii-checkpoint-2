@@ -1,4 +1,14 @@
-.bookPage {
+
+.bookMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 24
+}
+  
+  
+  .bookPage {
   min-height: 100vh;
   background: #ffffff;
 }
@@ -62,7 +72,11 @@
   cursor: not-allowed;
 }
 
-/* Updated Rating Section */
+
+.addToCartBtn img,
+.addToCartBtnMain img {
+  filter: brightness(0) invert(1);
+}
 .rateThisBook {
   padding: 20px;
   background: #f8f9fa;
@@ -150,6 +164,41 @@
   border-color: #0e7490;
 }
 
+/* Reading Statistics */
+.statusStats {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #f3f4f6;
+}
+
+.statCount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0891b2;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  font-weight: 500;
+}
+
 .mainContent {
   padding-top: 0;
 }
@@ -170,6 +219,7 @@
   font-size: 18px;
   color: #6b7280;
   margin: 0 0 20px 0;
+  font-weight: 500;
 }
 
 .ratingOverview {
@@ -213,6 +263,30 @@
   color: #6b7280;
 }
 
+/* Enhanced Genres Section */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.genreTag {
+  padding: 8px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.genreTag:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
 .bookAbout {
   font-size: 16px;
   line-height: 1.7;
@@ -220,37 +294,96 @@
   margin-bottom: 24px;
 }
 
-.genres {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.genreTag {
-  padding: 6px 12px;
-  background: #f3f4f6;
-  color: #374151;
-  border-radius: 16px;
-  font-size: 13px;
-  font-weight: 500;
-}
-
+/* Professional Pricing Section */
 .bookMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 24px 0;
+  margin-bottom: 32px;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.metaInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.metaItem {
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.metaSeparator {
+  display: none;
+}
+
+.metaGenres {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.bookPriceAction {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.bookPrice {
+  display: flex;
+  align-items: center;
+}
+
+.priceAmount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.addToCartBtnMain {
+  background: #2f7c54;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #6b7280;
-  padding-bottom: 32px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid #e5e7eb;
-  flex-wrap: wrap;
+}
+
+.addToCartBtnMain:hover:not(:disabled) {
+  background: #266345;
+  transform: translateY(-1px);
+}
+
+.addToCartBtnMain:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.addToCartBtnMain .cartIcon {
+  filter: brightness(0) invert(1);
 }
 
 .ratingsSection {
   margin-bottom: 48px;
 }
+
 
 .ratingsSection h2 {
   font-size: 24px;
@@ -325,6 +458,7 @@
 .reviewHeaderActions {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
 .writeReviewBtn {
@@ -390,10 +524,55 @@
   margin-bottom: 12px;
 }
 
+.reviewUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.avatarLink {
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.avatarLink:hover {
+  opacity: 0.8;
+}
+
+.userAvatar {
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarFallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 18px;
+}
+
 .reviewAuthor {
   font-weight: 600;
   color: #1f2937;
   font-size: 15px;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.reviewAuthor:hover {
+  color: #0891b2;
 }
 
 .reviewDate {
@@ -460,23 +639,61 @@
   margin-bottom: 0;
 }
 
+.commentUserInfo {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.commentAvatar {
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.commentAvatarFallback {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.commentMain {
+  flex: 1;
+  min-width: 0;
+}
+
 .commentHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .commentAuthor {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   color: #374151;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.commentAuthor:hover {
+  color: #0891b2;
 }
 
 .commentText {
   font-size: 14px;
   color: #4b5563;
   margin-bottom: 4px;
+  line-height: 1.5;
 }
 
 .commentDate {
@@ -485,24 +702,54 @@
 }
 
 .deleteCommentBtn {
-  background: transparent;
+  background: none;
   border: none;
   color: #9ca3af;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: 0 4px;
+  transition: color 0.2s ease;
+  line-height: 1;
+  margin-left: 8px;
 }
 
 .deleteCommentBtn:hover {
-  background: #fee2e2;
   color: #ef4444;
+}
+
+.adminDeleteBtn {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adminDeleteBtn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.adminDeleteCommentBtn {
+  padding: 4px 8px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.adminDeleteCommentBtn:hover {
+  background-color: #c82333;
+  box-shadow: 0 1px 4px rgba(220, 53, 69, 0.3);
 }
 
 .commentForm {
@@ -541,6 +788,43 @@
 
 .submitCommentBtn:hover {
   background: #0e7490;
+}
+
+.genresSection {
+  margin: 1.5rem 0 2rem 0;
+}
+
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.genreTag {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.genreTag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.metaItemBlock {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.metaGenresLabel {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 .modal {
@@ -651,254 +935,6 @@
   color: white;
 }
 
-
-
-/* Add these styles to your existing book.module.css */
-
-/* Review user info with avatar */
-.reviewUserInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.avatarLink {
-  display: block;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: opacity 0.2s;
-  flex-shrink: 0;
-}
-
-.avatarLink:hover {
-  opacity: 0.8;
-}
-
-.userAvatar {
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-}
-
-.reviewAuthor {
-  font-weight: 600;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.reviewAuthor:hover {
-  color: #d4a574;
-}
-
-/* Comment user info with avatar */
-.commentUserInfo {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-}
-
-.commentAvatar {
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-}
-
-.commentMain {
-  flex: 1;
-  min-width: 0;
-}
-
-.commentHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.commentAuthor {
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s;
-  cursor: pointer;
-}
-
-.commentAuthor:hover {
-  color: #d4a574;
-}
-
-.commentText {
-  color: #555;
-  line-height: 1.5;
-  margin-bottom: 4px;
-}
-
-.commentDate {
-  font-size: 12px;
-  color: #999;
-}
-
-.deleteCommentBtn {
-  background: none;
-  border: none;
-  color: #999;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-  flex-shrink: 0;
-}
-
-.deleteCommentBtn:hover {
-  color: #e74c3c;
-}
-
-.adminDeleteBtn {
-  padding: 6px 12px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.adminDeleteBtn:hover {
-  background-color: #c82333;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-}
-
-.adminDeleteBtn:active {
-  transform: translateY(0);
-}
-
-/* Admin Delete Buttons for Comments */
-.adminDeleteCommentBtn {
-  padding: 4px 8px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-left: 8px;
-}
-
-.adminDeleteCommentBtn:hover {
-  background-color: #c82333;
-  box-shadow: 0 1px 4px rgba(220, 53, 69, 0.3);
-}
-
-/* Regular User Delete Comment Button */
-.deleteCommentBtn {
-  background: none;
-  border: none;
-  color: #999;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0 4px;
-  transition: color 0.2s ease;
-  line-height: 1;
-  margin-left: 8px;
-}
-
-.deleteCommentBtn:hover {
-  color: #dc3545;
-}
-
-/* Review Header Layout - to accommodate admin button */
-.reviewHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.reviewUserInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-}
-
-/* Comment Header Layout */
-.commentHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.commentAuthor {
-  font-weight: 600;
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.commentAuthor:hover {
-  color: #0066cc;
-}
-
-/* User Delete Review Button Styling */
-.deleteReviewBtn {
-  padding: 8px 16px;
-  background-color: transparent;
-  color: #dc3545;
-  border: 1px solid #dc3545;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.deleteReviewBtn:hover {
-  background-color: #dc3545;
-  color: white;
-}
-
-
-.reviewHeaderActions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-
-@media (max-width: 768px) {
-  .adminDeleteBtn {
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-  
-  .reviewHeader {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .reviewHeaderActions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -987,5 +1023,34 @@
   .statusBtn {
     font-size: 12px;
     padding: 8px 12px;
+  }
+
+  .priceAmount {
+    font-size: 28px;
+  }
+
+  .bookMeta {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .bookPriceAction {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .addToCartBtnMain {
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .adminDeleteBtn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .reviewHeader {
+    flex-direction: column;
+    gap: 10px;
   }
 }

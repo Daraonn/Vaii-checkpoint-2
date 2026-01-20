@@ -22,11 +22,11 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET - Get user's follows list
+
 export async function GET(req, context) {
   const { params } = context;
   const resolvedParams = await params;
-  const userId = Number(resolvedParams.id); // CHANGED from userId to id
+  const userId = Number(resolvedParams.id); 
 
   if (isNaN(userId)) {
     return new Response(

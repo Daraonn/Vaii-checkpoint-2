@@ -220,26 +220,34 @@ export default function ShopPage() {
             
             <div className="new-arrivals-grid">
               {fantasyBooks.map((book) => (
-                <Link 
-                  key={book.book_id} 
-                  href={`/book/${book.book_id}`}
-                  className="arrival-card"
-                >
-                  <div className="arrival-image-wrapper">
-                    <Image
-                      src={book.image || "/placeholder.png"}
-                      width={200}
-                      height={280}
-                      alt={book.name}
-                      className="arrival-image"
-                    />
-                    <div className="genre-badge-overlay">FANTASY</div>
-                  </div>
+                <div key={book.book_id} className="book-card">
+                  <Link href={`/book/${book.book_id}`} className="book-image-link">
+                    <div className="book-image-wrapper">
+                      <Image
+                        src={book.image || "/placeholder.png"}
+                        width={180}
+                        height={270}
+                        alt={book.name}
+                        className="book-image"
+                      />
+                      <span className="genre-badge-overlay">FANTASY</span>
+                    </div>
+                  </Link>
+
                   <div className="book-info">
                     <p className="book-author">{book.author}</p>
-                    <h3 className="book-title">{book.name}</h3>
+                    <Link href={`/book/${book.book_id}`}>
+                      <h3 className="book-title">{book.name}</h3>
+                    </Link>
+                    
+                    <div className="book-footer">
+                      <span className="book-price">${Number(book.price).toFixed(2)}</span>
+                      <Link href={`/book/${book.book_id}`} className="quick-view-btn">
+                        View Details
+                      </Link>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </section>

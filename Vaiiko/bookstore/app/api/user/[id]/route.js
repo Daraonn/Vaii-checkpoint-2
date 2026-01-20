@@ -22,7 +22,7 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET handler to fetch user profile data
+
 export async function GET(req, context) {
   const { params } = context;
   const resolvedParams = await params;

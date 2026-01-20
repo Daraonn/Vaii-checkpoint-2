@@ -27,7 +27,7 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET - Public, anyone can view
+
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
@@ -51,7 +51,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// POST - Protected, only the user can create/update their own ratings
+
 export async function POST(request, { params }) {
   try {
     const { id } = await params;

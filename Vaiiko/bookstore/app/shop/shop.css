@@ -252,10 +252,11 @@
   overflow: hidden;
   border: 1px solid #e2e8f0;
   transition: all 0.3s;
+  box-shadow: 4px 0 12px rgba(0, 123, 255, 0.4);
 }
 
 .book-card:hover {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 8px 12px 35px rgba(0, 123, 255, 0.5);
   transform: translateY(-8px);
 }
 
@@ -372,31 +373,40 @@
 
 .new-arrivals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 1.5rem;
 }
 
 .arrival-card {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s;
+  box-shadow: 4px 0 12px rgba(0, 123, 255, 0.4);
   text-decoration: none;
-  transition: transform 0.3s;
 }
 
 .arrival-card:hover {
-  transform: translateY(-4px);
+  box-shadow: 8px 12px 35px rgba(0, 123, 255, 0.5);
+  transform: translateY(-8px);
 }
 
 .arrival-image-wrapper {
   position: relative;
-  border-radius: 0.5rem;
+  width: 100%;
+  height: 200px;
+  background: #f1f5f9;
   overflow: hidden;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .arrival-image {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.3s;
 }
 
@@ -406,13 +416,13 @@
 
 .genre-badge-overlay {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.75rem;
+  left: 0.75rem;
   background: rgba(139, 92, 246, 0.95);
   color: white;
-  padding: 0.25rem 0.625rem;
-  border-radius: 0.25rem;
-  font-size: 0.7rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
@@ -515,7 +525,7 @@
   }
 
   .new-arrivals-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }
 

@@ -22,7 +22,6 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET - Get all conversations for the user
 export async function GET(req) {
   const userId = await getUserIdFromToken();
 
@@ -34,7 +33,7 @@ export async function GET(req) {
   }
 
   try {
-    // Get all unique users the current user has messaged with
+    
     const messages = await prisma.message.findMany({
       where: {
         OR: [

@@ -27,13 +27,13 @@ async function getUserIdFromToken() {
   }
 }
 
-// GET /api/user/[id]/cart - Get user's cart
+
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
     const userId = await getUserIdFromToken();
 
-    // Users can only view their own cart
+
     if (!userId || userId !== parseInt(id)) {
       return new Response(
         JSON.stringify({ error: 'Not authorized' }), 
@@ -60,7 +60,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// POST /api/user/[id]/cart - Add item to cart
+
 export async function POST(request, { params }) {
   try {
     const { id } = await params;

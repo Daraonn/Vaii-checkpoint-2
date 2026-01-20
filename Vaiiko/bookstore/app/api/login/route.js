@@ -58,9 +58,9 @@ export async function POST(req) {
       `token=${token}`,
       'HttpOnly',
       'Path=/',
-      `Max-Age=${7 * 24 * 60 * 60}`, // 7 days in seconds
+      `Max-Age=${7 * 24 * 60 * 60}`,
       'SameSite=Lax',
-      isProduction ? 'Secure' : '', // Only use Secure in production (HTTPS)
+      'Secure', 
     ].filter(Boolean).join('; ');
 
     return new Response(

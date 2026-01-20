@@ -81,8 +81,8 @@ model FavouriteBook {
   book_id         Int
   addedAt         DateTime @default(now())
 
-  user            User @relation(fields: [user_id], references: [user_id])
-  book            Book @relation(fields: [book_id], references: [book_id])
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book            Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
 
   @@unique([user_id, book_id])
 }
@@ -94,8 +94,8 @@ model CartItem {
   quantity        Int      @default(1)  
   addedAt         DateTime @default(now())
 
-  user            User @relation(fields: [user_id], references: [user_id])
-  book            Book @relation(fields: [book_id], references: [book_id])
+  user            User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  book            Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
 
   @@unique([user_id, book_id]) 
 }
@@ -144,7 +144,7 @@ model OrderItem {
   price           Float    
   
   order           Order @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
-  book            Book @relation(fields: [book_id], references: [book_id])
+  book            Book @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
   
   @@index([order_id])
   @@index([book_id])

@@ -35,7 +35,7 @@
   position: absolute;
   top: 3px; 
   left: 3px; 
-  width: calc(102% - 110px);
+  right: 95px;
   height: 44px;
   background-color: #007bff;
   border-radius: 10px;
@@ -137,6 +137,11 @@
     padding: 9px 15px;
   }
 
+  .searchbar-container::before {
+    height: 40px;
+    right: 90px;
+  }
+
   .book-name {
     font-size: 0.9rem;
   }
@@ -157,6 +162,11 @@
     padding: 8px 12px;
   }
 
+  .searchbar-container::before {
+    height: 38px;
+    right: 80px;
+  }
+
   .book-name {
     font-size: 0.85rem;
   }
@@ -175,6 +185,11 @@
   .search-bar button {
     font-size: 13px;
     padding: 7px 10px;
+  }
+
+  .searchbar-container::before {
+    height: 34px;
+    right: 70px;
   }
 
   .book-name {

@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
         
         let filteredUsers = data.users || [];
         
-        // Client-side filtering if search is active
+        
         if (debouncedSearch) {
           filteredUsers = filteredUsers.filter(user => 
             user.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||

@@ -7,7 +7,7 @@ export async function POST(request) {
     const body = await request.json();
     const { userId, orderData, cartItems } = body;
 
-    // Create order with items
+    
     const order = await prisma.order.create({
       data: {
         user_id: userId,
@@ -64,7 +64,7 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  // Optional: Get all orders for a user
+  
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');

@@ -22,7 +22,7 @@ async function getUserIdFromToken() {
   return null;
 }
 
-// GET - Public, anyone can view
+
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
@@ -46,7 +46,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// POST - Protected, only the user can add their own favorites
+
 export async function POST(request, { params }) {
   try {
     const { id } = await params;

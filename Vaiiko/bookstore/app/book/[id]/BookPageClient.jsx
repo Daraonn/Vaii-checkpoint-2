@@ -480,11 +480,13 @@ export default function BookPageClient({ book }) {
               onClick={addToCart}
               disabled={loading}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="9" cy="21" r="1"/>
-                <circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
+              <Image
+                src="/cart.png"
+                width={20}
+                height={20}
+                alt="Cart"
+                className={styles.cartIcon}
+              />
               {loading ? "Loading..." : "Add to Cart"}
             </button>
 
@@ -534,6 +536,34 @@ export default function BookPageClient({ book }) {
                     DNF
                   </button>
                 </div>
+
+                {/* Reading Statistics */}
+                <div className={styles.statusStats}>
+                  <div className={styles.statItem}>
+                    <span className={styles.statCount}>
+                      {bookStats.statusCounts?.WANT_TO_READ || 0}
+                    </span>
+                    <span className={styles.statLabel}>Want to Read</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span className={styles.statCount}>
+                      {bookStats.statusCounts?.CURRENTLY_READING || 0}
+                    </span>
+                    <span className={styles.statLabel}>Reading</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span className={styles.statCount}>
+                      {bookStats.statusCounts?.COMPLETED || 0}
+                    </span>
+                    <span className={styles.statLabel}>Completed</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span className={styles.statCount}>
+                      {bookStats.statusCounts?.DNF || 0}
+                    </span>
+                    <span className={styles.statLabel}>DNF</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -542,7 +572,7 @@ export default function BookPageClient({ book }) {
         <main className={styles.mainContent}>
           <div className={styles.bookHeader}>
             <h1 className={styles.bookTitle}>{book.name}</h1>
-            <p className={styles.bookAuthor}>{book.author}</p>
+            <p className={styles.bookAuthor}>by {book.author}</p>
             
             <div className={styles.ratingOverview}>
               <div className={styles.starsLarge}>
@@ -555,28 +585,64 @@ export default function BookPageClient({ book }) {
             </div>
           </div>
 
+            {/* GENRES SECTION */}
+            {book.genres && book.genres.length > 0 && (
+              <div className={styles.genresSection}>
+                <div className={styles.genres}>
+                  {book.genres.map(g => (
+                    <span key={g.genre_id || g.book_genre_id} className={styles.genreTag}>
+                       {g.genre.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           <div className={styles.bookAbout}>
             <p>{book.about}</p>
           </div>
 
-          {book.genres && book.genres.length > 0 && (
-            <div className={styles.genres}>
-              {book.genres.map(g => (
-                <span key={g.genre_id} className={styles.genreTag}>
-                  {g.genre.name}
-                </span>
-              ))}
-            </div>
-          )}
-
+          {/* Professional Pricing Section */}
           <div className={styles.bookMeta}>
-            <span>{book.language}</span>
-            <span>·</span>
-            <span>{book.year}</span>
-            <span>·</span>
-            <span>ISBN: {book.ISBN}</span>
-            <span>·</span>
-            <span>${book.price}</span>
+            <div className={styles.metaInfo}>
+              <span className={styles.metaItem}>Language: {book.language}</span>
+              <span className={styles.metaItem}>Year: {book.year}</span>
+              <span className={styles.metaItem}>ISBN: {book.ISBN}</span>
+              
+              {/* Genres in metadata */}
+              {book.genres && book.genres.length > 0 && (
+                <div className={styles.metaItemBlock}>
+                  <div className={styles.metaGenresLabel}>Genres:</div>
+                  <div className={styles.metaGenres}>
+                    {book.genres.map((g, index) => (
+                      <span key={g.genre_id}>
+                        {g.genre.name}
+                        {index < book.genres.length - 1 && ', '}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+            
+            <div className={styles.bookPriceAction}>
+              <div className={styles.bookPrice}>
+                <span className={styles.priceAmount}>${Number(book.price).toFixed(2)}</span>
+              </div>
+              <button 
+                className={styles.addToCartBtnMain} 
+                onClick={addToCart}
+                disabled={loading}
+              >
+                <Image
+                  src="/cart.png"
+                  width={20}
+                  height={20}
+                  alt="Cart"
+                />
+                {loading ? "Loading..." : "Add to Cart"}
+              </button>
+            </div>
           </div>
 
           <div ref={detailsRef} className={styles.ratingsSection}>

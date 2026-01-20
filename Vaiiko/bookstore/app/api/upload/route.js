@@ -8,7 +8,7 @@ export async function POST(req) {
     const formData = await req.formData();
     const file = formData.get("file");
     
-    // Get the type parameter from URL (e.g., ?type=avatar or ?type=book)
+    
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type") || "books"; // Default to books
 
@@ -43,20 +43,20 @@ export async function POST(req) {
       subFolder = "books";
     }
     
-    // Save to public/assets/{subFolder} directory
+    
     const uploadDir = join(process.cwd(), "public", "assets", subFolder);
     
-    // Create directory if it doesn't exist
+    
     try {
       await mkdir(uploadDir, { recursive: true });
     } catch (err) {
-      // Directory already exists, ignore
+     
     }
     
     const filepath = join(uploadDir, filename);
     await writeFile(filepath, buffer);
     
-    // Return the URL path
+    
     const url = `/assets/${subFolder}/${filename}`;
     
     return NextResponse.json({ url }, { status: 200 });

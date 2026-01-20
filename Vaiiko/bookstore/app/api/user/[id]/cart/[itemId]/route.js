@@ -27,7 +27,7 @@ async function getUserIdFromToken() {
   }
 }
 
-// PATCH /api/user/[id]/cart/[itemId] - Update cart item quantity
+
 export async function PATCH(request, { params }) {
   try {
     const { id, itemId } = await params;
@@ -88,7 +88,7 @@ export async function PATCH(request, { params }) {
   }
 }
 
-// DELETE /api/user/[id]/cart/[itemId] - Remove cart item
+
 export async function DELETE(request, { params }) {
   try {
     const { id, itemId } = await params;

@@ -10,7 +10,7 @@ const Browse = () => {
   const [books, setBooks] = useState([]);
   const [visibleGenresCount, setVisibleGenresCount] = useState(10);
   const [sortBy, setSortBy] = useState('name');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid'); 
   const [searchQuery, setSearchQuery] = useState('');
 
   const GENRES_INCREMENT = 10;

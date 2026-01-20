@@ -22,7 +22,7 @@ async function getUserIdFromToken() {
   return null;
 }
 
-// DELETE /api/user/[id]/favorites/[bookId] - Remove a favorite
+
 export async function DELETE(request, { params }) {
   try {
     const { id, bookId } = await params;
