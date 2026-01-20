@@ -494,7 +494,7 @@ export default function AddBook() {
                   
                   <div className="review-item full-width">
                     <span className="review-label">Description:</span>
-                    <span className="review-value">{book.about}</span>
+                    <span className="review-value" style={{ whiteSpace: "pre-wrap" }}>{book.about}</span>
                   </div>
                   
                   <div className="review-item full-width">

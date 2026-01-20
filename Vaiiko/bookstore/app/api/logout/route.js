@@ -6,7 +6,7 @@ export async function POST() {
     'Path=/',
     'Max-Age=0',
     'SameSite=Lax',
-    isProduction ? 'Secure' : '',
+    'Secure',
   ].filter(Boolean).join('; ');
 
   return new Response(

@@ -106,18 +106,6 @@ const ProfilePage = () => {
           setFollows([]);
         }
 
-        // Fetch followers (people who follow this user)
-        try {
-          const followersRes = await fetch(`/api/user/${targetUserId}/followers`);
-          if (followersRes.ok) {
-            const followersData = await followersRes.json();
-            console.log('Followers for user', targetUserId, ':', followersData.followers?.length || 0);
-            setFollowers(followersData.followers || []);
-          }
-        } catch (err) {
-          setFollowers([]);
-        }
-
         // Fetch ratings
         try {
           const ratingsRes = await fetch(`/api/user/${targetUserId}/ratings`);
@@ -174,7 +162,7 @@ const ProfilePage = () => {
     }
 
     const myUserId = currentUser.user_id || currentUser.id;
-    const targetProfileId = parseInt(profileId); // Convert to number
+    const targetProfileId = parseInt(profileId); 
     
     console.log('Attempting to follow/unfollow:', {
       myUserId,

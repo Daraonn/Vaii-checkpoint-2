@@ -1,7 +1,13 @@
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(6, minmax(160px, 1fr));
+  grid-template-rows: 1fr;
   gap: 1.5rem;
+  overflow: hidden;
+}
+
+.books-grid .book-card:nth-child(n+7) {
+  display: none;
 }
 
 .home-page {
@@ -21,7 +27,7 @@
 /* Hero Banner */
 .hero-banner {
   position: relative;
-  height: 500px;
+  height: clamp(300px, 50vh, 500px);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
@@ -45,7 +51,8 @@
   z-index: 1;
   width: 100%;
   max-width: 1200px;
-  padding: 0 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
 }
 
 .hero-content {
@@ -54,34 +61,35 @@
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: clamp(1.75rem, 5vw, 3.5rem);
   font-weight: 700;
-  margin: 0 0 1rem 0;
+  margin: 0 0 clamp(0.75rem, 2vw, 1rem) 0;
   line-height: 1.2;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  margin: 0 0 2.5rem 0;
+  font-size: clamp(0.875rem, 2vw, 1.25rem);
+  margin: 0 0 clamp(1.5rem, 3vw, 2.5rem) 0;
   opacity: 0.95;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 1rem;
+  gap: clamp(0.5rem, 2vw, 1rem);
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 1rem 2.5rem;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2.5rem);
   border-radius: 0.5rem;
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s;
   display: inline-block;
+  box-sizing: border-box;
 }
 
 .btn-primary {
@@ -373,8 +381,14 @@
 
 .new-arrivals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(6, minmax(160px, 1fr));
+  grid-template-rows: 1fr;
   gap: 1.5rem;
+  overflow: hidden;
+}
+
+.new-arrivals-grid .book-card:nth-child(n+7) {
+  display: none;
 }
 
 .arrival-card {
@@ -469,22 +483,25 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* Custom scrollbar styling - removed as not needed */
+
 /* Responsive */
 @media (max-width: 768px) {
-  .hero-banner {
-    height: 400px;
-  }
-
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.125rem;
-  }
-
   .home-container {
     padding: 0 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 1rem 1.5rem;
   }
 
   .categories-section,
@@ -518,39 +535,19 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
-
-  .books-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .new-arrivals-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
 }
 
 @media (max-width: 480px) {
-  .hero-banner {
-    height: 350px;
-  }
-
-  .hero-title {
-    font-size: 2rem;
-  }
-
   .hero-buttons {
     flex-direction: column;
     width: 100%;
+    gap: 0.75rem;
   }
 
   .btn-primary,
   .btn-secondary {
     width: 100%;
-  }
-
-  .books-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    padding: 1rem 1.5rem;
   }
 
   .cta-card {

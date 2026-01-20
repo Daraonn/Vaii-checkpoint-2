@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import { createFollowingThreadAlert } from '../../../alertHelpers'; 
+import { createFollowingThreadAlert } from '../../../lib/alertHelpers'; 
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;

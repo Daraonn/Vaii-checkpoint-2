@@ -598,7 +598,7 @@ export default function BookPageClient({ book }) {
               </div>
             )}
           <div className={styles.bookAbout}>
-            <p>{book.about}</p>
+            <p style={{ whiteSpace: "pre-wrap" }}>{book.about}</p>
           </div>
 
           {/* Professional Pricing Section */}

@@ -22,21 +22,21 @@ export async function POST(req) {
 
     if (!email || !password || !username) {
       return new Response(
-        JSON.stringify({ error: 'Email, username a heslo sú povinné.' }),
+        JSON.stringify({ error: 'Email, username and password are required.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     if (username.length < 3) {
       return new Response(
-        JSON.stringify({ error: 'Používateľské meno musí mať aspoň 3 znaky.' }),
+        JSON.stringify({ error: 'Username is required to have atleast 3 characters.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     if (bannedChars.test(username) || bannedChars.test(email)) {
       return new Response(
-        JSON.stringify({ error: 'Používateľské meno alebo email obsahuje nepovolené znaky.' }),
+        JSON.stringify({ error: 'Username or Email contain forbidden characters.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -59,14 +59,14 @@ export async function POST(req) {
 
     if (existingEmail) {
       return new Response(
-        JSON.stringify({ error: 'Používateľ s týmto e-mailom už existuje.' }),
+        JSON.stringify({ error: 'User with this Email already exists.' }),
         { status: 409, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     if (existingName) {
       return new Response(
-        JSON.stringify({ error: 'Používateľ s týmto používateľským menom už existuje.' }),
+        JSON.stringify({ error: 'User with this username already exists.' }),
         { status: 409, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -77,7 +77,7 @@ export async function POST(req) {
       console.log('Password hashed');
     } catch (err) {
       console.error('Password hashing failed:', err);
-      return new Response(JSON.stringify({ error: 'Chyba pri spracovaní hesla.' }), {
+      return new Response(JSON.stringify({ error: 'Issue with password hashing.' }), {
         status: 502,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -91,7 +91,7 @@ export async function POST(req) {
       console.log('User created:', user);
     } catch (err) {
       console.error('Failed to create user:', err);
-      return new Response(JSON.stringify({ error: 'Chyba pri vytváraní používateľa.' }), {
+      return new Response(JSON.stringify({ error: 'Issue with the creation of an User.' }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -103,7 +103,7 @@ export async function POST(req) {
     );
   } catch (err) {
     console.error('Unexpected server error:', err);
-    return new Response(JSON.stringify({ error: 'Neočakávaná chyba servera.' }), {
+    return new Response(JSON.stringify({ error: 'Unexpected server error.' }), {
       status: 504,
       headers: { 'Content-Type': 'application/json' },
     });

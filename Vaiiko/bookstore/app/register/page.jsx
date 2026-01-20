@@ -30,27 +30,27 @@ const Register = () => {
     const { username, email, password, confirmPassword, agreed } = formData;
 
     if (!username || !email || !password || !confirmPassword) {
-      setError('Všetky polia musia byť vyplnené.');
+      setError('All field are required to be filled.');
       return;
     }
 
     if (username.length < 3) {
-      setError('Používateľské meno musí mať aspoň 3 znaky.');
+      setError('Username needs to contain atleast 3 characters.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Heslá sa musia zhodovať.');
+      setError('Password must match.');
       return;
     }
 
     if (password.length < 8) {
-      setError('Používateľské heslo musí byť aspoň 8 znakov.');
+      setError('User password need to have atleast 8 characters.');
       return;
     }
 
     if (!agreed) {
-      setError('Potvrdte že súhlasíte s obchodnými podmienkami.');
+      setError('Please confirm that you agree to the terms and conditions.');
       return;
     }
 
@@ -96,7 +96,7 @@ const Register = () => {
             name="username"
             value={formData.username}
             onChange={handleChange}
-            placeholder="Používateľské meno"
+            placeholder="Username"
             required
           />
           <input
@@ -112,7 +112,7 @@ const Register = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Heslo"
+            placeholder="Password"
             required
           />
           <input
@@ -120,13 +120,13 @@ const Register = () => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
-            placeholder="Zopakujte Heslo"
+            placeholder="Repeat password"
             required
           />
           {error && <p className="error-message">{error}</p>}
-          <button type="submit" disabled={loading}>Pokračuj</button>
+          <button type="submit" disabled={loading}>Continue</button>
           <p className="register-login">
-            Máte už účet? Prihláste sa <Link href='/login'><span>tu</span></Link>
+            Already have an account? Log in <Link href='/login'><span>here</span></Link>
           </p>
           <div className="register-checkbox">
             <input
@@ -136,7 +136,7 @@ const Register = () => {
               checked={formData.agreed}
               onChange={handleChange}
             />
-            <p>Pokračovaním súhlasíte so všeobecnými obchodnými podmienkami</p>
+            <p>Please confirm that you agree to the terms and conditions.</p>
           </div>
         </form>
       </div>

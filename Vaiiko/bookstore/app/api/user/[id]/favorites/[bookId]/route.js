@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { getUserIdFromToken } from '@/app/lib/auth';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -8,20 +9,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in environment variables');
 }
-
-async function getUserIdFromToken() {
-  const cookieStore = await cookies();
-  const tokenCookie = cookieStore.get("token");
-  if (!tokenCookie) return null;
-  try {
-    const payload = jwt.verify(tokenCookie.value, JWT_SECRET);
-    if (typeof payload === "object" && payload && "user_id" in payload) return payload.user_id;
-  } catch (err) {
-    console.error(err);
-  }
-  return null;
-}
-
 
 export async function DELETE(request, { params }) {
   try {

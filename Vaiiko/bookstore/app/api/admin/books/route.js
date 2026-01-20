@@ -32,7 +32,7 @@ export async function POST(req) {
       about,
       language,
       year,
-      genres, // Array of genre IDs
+      genres, 
     } = await req.json();
 
     if (!name || !author || !ISBN || !about || !language || !year) {
