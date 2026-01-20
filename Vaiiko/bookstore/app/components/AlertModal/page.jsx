@@ -86,7 +86,7 @@ export default function AlertModal({ isOpen, onClose }) {
     case 'THREAD_COMMENT':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on a thread you're following
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on a thread you're following
           {alert.thread?.title && (
             <span className="alert-thread-title"> "{alert.thread.title}"</span>
           )}
@@ -104,20 +104,20 @@ export default function AlertModal({ isOpen, onClose }) {
     case 'FOLLOWING_REVIEWED':
       return (
         <>
-          <strong>{alert.actor.name}</strong> reviewed{' '}
-          <strong>{alert.book?.name}</strong>
+          <strong>{alert.actor.username || alert.actor.name}</strong> reviewed{' '}
+          <strong>{alert.book?.name} </strong>
         </>
       );
     case 'FOLLOWING_COMMENTED':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on a review
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on a review
         </>
       );
     case 'COMMENT_ON_YOUR_REVIEW':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on your review
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on your review
         </>
       );
     default:
@@ -186,10 +186,10 @@ export default function AlertModal({ isOpen, onClose }) {
 
                 <div className="alert-modal-item-avatar">
                   {alert.actor.avatar ? (
-                    <img src={alert.actor.avatar} alt={alert.actor.name} />
+                    <img src={alert.actor.avatar} alt={alert.actor.username || alert.actor.name} />
                   ) : (
                     <div className="alert-modal-avatar-fallback">
-                      {alert.actor.name[0].toUpperCase()}
+                      {(alert.actor.username || alert.actor.name)[0].toUpperCase()}
                     </div>
                   )}
                 </div>

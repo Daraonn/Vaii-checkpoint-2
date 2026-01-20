@@ -207,10 +207,10 @@ export default function CommunityPage() {
                 >
                   <div className="thread-avatar">
                     {thread.user.avatar ? (
-                      <img src={thread.user.avatar} alt={thread.user.name} />
+                      <img src={thread.user.avatar} alt={thread.user.username || thread.user.name} />
                     ) : (
                       <div className="avatar-placeholder">
-                        {thread.user.name.charAt(0).toUpperCase()}
+                        {(thread.user.username || thread.user.name)?.charAt(0)?.toUpperCase() || '?'}
                       </div>
                     )}
                   </div>
@@ -219,7 +219,7 @@ export default function CommunityPage() {
                     <h2>{thread.title}</h2>
                     <p className="thread-excerpt">{thread.content}</p>
                     <div className="thread-meta">
-                      <span className="author">{thread.user.name}</span>
+                      <span className="author">{thread.user.username || thread.user.name}</span>
                       <span className="separator">•</span>
                       <span>{formatDate(thread.createdAt)}</span>
                       <span className="separator">•</span>
@@ -234,7 +234,7 @@ export default function CommunityPage() {
                     onClick={(e) => handleAdminDeleteThread(thread.thread_id, e)}
                     title="Delete thread as admin"
                   >
-                    🗑️ Admin Delete
+                    Admin Delete
                   </button>
                 )}
               </div>

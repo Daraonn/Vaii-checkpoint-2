@@ -46,7 +46,8 @@ export async function POST(request, { params }) {
         user: {
           select: {
             user_id: true,
-            name: true
+            name: true,
+            username: true,
           }
         }
       }

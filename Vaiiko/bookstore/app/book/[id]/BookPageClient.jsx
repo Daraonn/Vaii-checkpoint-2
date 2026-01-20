@@ -774,13 +774,13 @@ export default function BookPageClient({ book }) {
                             />
                           ) : (
                             <div className={styles.avatarFallback}>
-                              {review.user.name?.[0]?.toUpperCase() || '?'}
+                              {(review.user.username || review.user.name)?.[0]?.toUpperCase() || '?'}
                             </div>
                           )}
                         </Link>
                         <div>
                           <Link href={`/profile/${review.user.user_id}`} className={styles.reviewAuthor}>
-                            {review.user.name}
+                            {review.user.username || review.user.name}
                           </Link>
                           <div className={styles.reviewDate}>
                             {new Date(review.createdAt).toLocaleDateString('en-US', {
@@ -848,14 +848,14 @@ export default function BookPageClient({ book }) {
                                   />
                                 ) : (
                                   <div className={styles.commentAvatarFallback}>
-                                    {comment.user.name?.[0]?.toUpperCase() || '?'}
+                                    {comment.user.username?.[0]?.toUpperCase() || comment.user.name?.[0]?.toUpperCase() || '?'}
                                   </div>
                                 )}
                               </Link>
                               <div className={styles.commentMain}>
                                 <div className={styles.commentHeader}>
                                   <Link href={`/profile/${comment.user.user_id}`} className={styles.commentAuthor}>
-                                    {comment.user.name}
+                                    {comment.user.username || comment.user.name}
                                   </Link>
                                   {userId === comment.user.user_id && (
                                     <button 

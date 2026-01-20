@@ -47,6 +47,7 @@ export async function PATCH(req, context) {
     const dataToUpdate = {
       email: email || undefined,
       name: name || undefined,
+      
       isAdmin: isAdmin !== undefined ? Boolean(isAdmin) : undefined
     };
 

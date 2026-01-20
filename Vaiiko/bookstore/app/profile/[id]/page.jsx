@@ -430,13 +430,13 @@ const ProfilePage = () => {
                   <Link href={`/profile/${follow.following.user_id}`} key={follow.follow_id} className="follow-card">
                     <div className="follow-avatar">
                       {follow.following.avatar ? (
-                        <img src={follow.following.avatar} alt={follow.following.name} className="follow-avatar-image" />
+                        <img src={follow.following.avatar} alt={follow.following.username || follow.following.name} className="follow-avatar-image" />
                       ) : (
-                        <div className="follow-avatar-fallback">{follow.following.name[0].toUpperCase()}</div>
+                        <div className="follow-avatar-fallback">{(follow.following.username || follow.following.name)[0].toUpperCase()}</div>
                       )}
                     </div>
                     <div className="follow-info">
-                      <h3 className="follow-name">{follow.following.name}</h3>
+                      <h3 className="follow-name">{follow.following.username || follow.following.name}</h3>
                       <p className="follow-email">{follow.following.email}</p>
                       <p className="follow-date">
                         Following since {new Date(follow.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
@@ -474,9 +474,9 @@ const ProfilePage = () => {
             <div className="decorative-frame"></div>
             <div className="profile-avatar">
               {user.avatar ? (
-                <img src={user.avatar} alt={user.name} className="avatar-image" onError={(e) => { e.target.onerror = null; e.target.src = "/profile-picture.png"; }} />
+                <img src={user.avatar} alt={user.username || user.name} className="avatar-image" onError={(e) => { e.target.onerror = null; e.target.src = "/profile-picture.png"; }} />
               ) : (
-                <div className="avatar-fallback">{user.name[0].toUpperCase()}</div>
+                <div className="avatar-fallback">{(user.username || user.name)[0].toUpperCase()}</div>
               )}
             </div>
           </div>
@@ -507,7 +507,7 @@ const ProfilePage = () => {
       </div>
 
       <div className="username-section">
-        <h1 className="username">{user.name}</h1>
+        <h1 className="username">{user.username || user.name}</h1>
         {!isOwnProfile && currentUser && (
           <div style={{ display: 'flex', gap: '10px', marginTop: '12px', justifyContent: 'center' }}>
             <button 

@@ -33,6 +33,7 @@ export async function GET(req) {
           select: {
             user_id: true,
             name: true,
+            username: true,
             avatar: true
           }
         },

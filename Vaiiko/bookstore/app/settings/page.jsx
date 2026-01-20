@@ -49,7 +49,7 @@ const SettingsPage = () => {
         if (data.user) {
           setUser(data.user);
           setProfileData({
-            username: data.user.name || '',
+            username: data.user.username || '',
             bio: data.user.bio || '',
             dateOfBirth: data.user.dateOfBirth || '',
             title: data.user.title || '',

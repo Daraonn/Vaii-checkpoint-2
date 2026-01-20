@@ -19,6 +19,7 @@ export async function GET(request) {
             select: {
               user_id: true,
               name: true,
+              username: true,
               avatar: true,
             },
           },

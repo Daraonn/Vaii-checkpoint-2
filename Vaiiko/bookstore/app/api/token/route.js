@@ -38,7 +38,9 @@ export async function GET() {
       where: { user_id: payload.user_id },
       select: {
         user_id: true,
+        
         name: true,
+        username: true,
         email: true,
         isAdmin: true,
         avatar: true,  
@@ -63,6 +65,7 @@ export async function GET() {
         user_id: user.user_id,
         id: user.user_id,  
         name: user.name,
+        username: user.username,
         email: user.email,
         isAdmin: user.isAdmin,
         avatar: user.avatar,

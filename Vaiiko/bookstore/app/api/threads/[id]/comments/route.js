@@ -52,6 +52,7 @@ export async function POST(request, { params }) {
           select: {
             user_id: true,
             name: true,
+            username: true,
             avatar: true,
           },
         },

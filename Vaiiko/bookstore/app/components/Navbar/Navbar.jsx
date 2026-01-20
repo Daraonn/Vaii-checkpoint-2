@@ -228,7 +228,7 @@ export default function Navbar() {
                     e.target.src = "/login-picture.png";
                   }}
                   />
-                  <p className="navbar-username">{user.name}</p>
+                  <p className="navbar-username">{user.username || user.name}</p>
                 </div>
 
                 {open && (

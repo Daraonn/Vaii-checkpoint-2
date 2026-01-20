@@ -296,16 +296,20 @@ export default function ThreadDetailPage() {
 
         <div className="thread-main">
           <div className="thread-header-section">
-            <div className="user-info">
+            <div 
+              className="user-info"
+              onClick={() => router.push(`/profile/${thread.user.user_id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               {thread.user.avatar ? (
-                <img src={thread.user.avatar} alt={thread.user.name} className="user-avatar" />
+                <img src={thread.user.avatar} alt={thread.user.username || thread.user.name} className="user-avatar" />
               ) : (
                 <div className="avatar-placeholder">
-                  {thread.user.name.charAt(0).toUpperCase()}
+                  {(thread.user.username || thread.user.name)?.charAt(0)?.toUpperCase() || '?'}
                 </div>
               )}
               <div className="user-details">
-                <span className="user-name">{thread.user.name}</span>
+                <span className="user-name">{thread.user.username || thread.user.name}</span>
                 <span className="post-time">{formatDate(thread.createdAt)}</span>
               </div>
             </div>
@@ -333,8 +337,14 @@ export default function ThreadDetailPage() {
                   onClick={handleAdminDeleteThread}
                   className="action-button admin-delete"
                   title="Delete thread as admin"
+                  style={{ 
+                  backgroundColor: '#dc3545', 
+                  color: 'white',
+                  border: 'none'
+                }}
+                 
                 >
-                  🗑️ Admin Delete
+                  Admin Delete
                 </button>
               )}
             </div>
@@ -385,16 +395,20 @@ export default function ThreadDetailPage() {
               paginatedComments.map((comment) => (
                 <div key={comment.comment_id} className="comment">
                   <div className="comment-header">
-                    <div className="comment-user-info">
+                    <div 
+                      className="comment-user-info"
+                      onClick={() => router.push(`/profile/${comment.user.user_id}`)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       {comment.user.avatar ? (
-                        <img src={comment.user.avatar} alt={comment.user.name} className="comment-avatar" />
+                        <img src={comment.user.avatar} alt={comment.user.username || comment.user.name} className="comment-avatar" />
                       ) : (
                         <div className="avatar-placeholder small">
-                          {comment.user.name.charAt(0).toUpperCase()}
+                          {(comment.user.username || comment.user.name)?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                       )}
                       <div className="comment-user-details">
-                        <span className="comment-user-name">{comment.user.name}</span>
+                        <span className="comment-user-name">{comment.user.username || comment.user.name}</span>
                         <span className="comment-time">{formatDate(comment.createdAt)}</span>
                         {comment.updatedAt !== comment.createdAt && (
                           <span className="edited-badge">(edited)</span>
@@ -423,10 +437,16 @@ export default function ThreadDetailPage() {
                       {isAdmin && user && user.user_id !== comment.user_id && (
                         <button
                           onClick={() => handleAdminDeleteComment(comment.comment_id)}
-                          className="admin-delete-comment-btn"
+                          className="action-button admin-delete"
                           title="Delete comment as admin"
+
+                          style={{ 
+                            backgroundColor: '#dc3545', 
+                            color: 'white',
+                            border: 'none'
+                          }}
                         >
-                          🗑️ Admin Delete
+                          Admin Delete
                         </button>
                       )}
                     </div>
@@ -483,10 +503,10 @@ export default function ThreadDetailPage() {
             <form onSubmit={handleAddComment} className="comment-form comment-form-bottom">
               <div className="comment-input-wrapper">
                 {user.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="comment-avatar" />
+                  <img src={user.avatar} alt={user.username || user.name} className="comment-avatar" />
                 ) : (
                   <div className="avatar-placeholder small">
-                    {user.name.charAt(0).toUpperCase()}
+                    {(user.username || user.name)?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                 )}
                 <textarea

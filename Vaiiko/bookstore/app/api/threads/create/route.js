@@ -63,6 +63,7 @@ export async function POST(request) {
           select: {
             user_id: true,
             name: true,
+            username: true,
             avatar: true,
           },
         },

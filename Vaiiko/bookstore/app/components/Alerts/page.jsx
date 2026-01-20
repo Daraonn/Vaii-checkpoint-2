@@ -90,7 +90,7 @@ const getAlertMessage = (alert) => {
     case 'THREAD_COMMENT':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on a thread you're following
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on a thread you're following
           {alert.thread?.title && (
             <span className="alert-thread-title-inline">: "{alert.thread.title}"</span>
           )}
@@ -108,20 +108,20 @@ const getAlertMessage = (alert) => {
     case 'FOLLOWING_REVIEWED':
       return (
         <>
-          <strong>{alert.actor.name}</strong> reviewed{' '}
+          <strong>{alert.actor.username || alert.actor.name}</strong> reviewed{' '}
           <strong>{alert.book?.name}</strong>
         </>
       );
     case 'FOLLOWING_COMMENTED':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on a review
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on a review
         </>
       );
     case 'COMMENT_ON_YOUR_REVIEW':
       return (
         <>
-          <strong>{alert.actor.name}</strong> commented on your review
+          <strong>{alert.actor.username || alert.actor.name}</strong> commented on your review
         </>
       );
     default:
@@ -216,10 +216,10 @@ const getAlertIcon = (alert) => {
 
                 <div className="alert-avatar">
                   {alert.actor.avatar ? (
-                    <img src={alert.actor.avatar} alt={alert.actor.name} />
+                    <img src={alert.actor.avatar} alt={alert.actor.username || alert.actor.name} />
                   ) : (
                     <div className="avatar-fallback">
-                      {alert.actor.name[0].toUpperCase()}
+                      {(alert.actor.username || alert.actor.name)[0].toUpperCase()}
                     </div>
                   )}
                 </div>

@@ -337,7 +337,7 @@ const MessagesPage = () => {
                     )}
                   </div>
                   <div className="conversation-info">
-                    <div className="conversation-name">{conv.partner.name}</div>
+                    <div className="conversation-name">{conv.partner.username || conv.partner.name}</div>
                     <div className="conversation-last-message">
                       {conv.lastMessage.is_deleted 
                         ? '[Message deleted]' 
@@ -380,7 +380,7 @@ const MessagesPage = () => {
                     <>
                       <Link href={`/profile/${partner.user_id}`} className="partner-avatar">
                         {partner.avatar ? (
-                          <img src={partner.avatar} alt={partner.name} />
+                          <img src={partner.avatar} alt={partner.username || partner.name} />
                         ) : (
                           <div className="avatar-fallback">
                             {partner.name[0].toUpperCase()}
@@ -388,7 +388,7 @@ const MessagesPage = () => {
                         )}
                       </Link>
                       <Link href={`/profile/${partner.user_id}`} className="partner-name">
-                        {partner.name}
+                        {partner.username || partner.name}
                       </Link>
                     </>
                   )}
@@ -428,7 +428,7 @@ const MessagesPage = () => {
                           {!isOwn && (
                             <div className="message-avatar">
                               {msg.sender.avatar ? (
-                                <img src={msg.sender.avatar} alt={msg.sender.name} />
+                                <img src={msg.sender.avatar} alt={msg.sender.username || msg.sender.user} />
                               ) : (
                                 <div className="avatar-fallback-small">
                                   {msg.sender.name[0].toUpperCase()}
