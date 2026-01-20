@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './browse.css';
+import { useSearchParams } from 'next/navigation';
 
 const Browse = () => {
   const [genres, setGenres] = useState([]);
@@ -12,6 +13,7 @@ const Browse = () => {
   const [sortBy, setSortBy] = useState('name');
   const [viewMode, setViewMode] = useState('grid'); 
   const [searchQuery, setSearchQuery] = useState('');
+  const searchParams = useSearchParams();
 
   const GENRES_INCREMENT = 10;
 
@@ -27,6 +29,27 @@ const Browse = () => {
     };
     fetchGenres();
   }, []);
+
+
+  useEffect(() => {
+    const genreParam = searchParams.get('genre');
+    if (genreParam) {
+      
+      const genreId = parseInt(genreParam);
+      if (!isNaN(genreId) && !selectedGenres.includes(genreId)) {
+        setSelectedGenres([genreId]);
+      }
+     
+      else {
+        const matchingGenre = genres.find(
+          g => g.name.toLowerCase() === genreParam.toLowerCase()
+        );
+        if (matchingGenre && !selectedGenres.includes(matchingGenre.genre_id)) {
+          setSelectedGenres([matchingGenre.genre_id]);
+        }
+      }
+    }
+  }, [searchParams, genres]); 
 
   useEffect(() => {
     const fetchBooks = async () => {

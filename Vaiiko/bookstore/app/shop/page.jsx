@@ -28,8 +28,6 @@ export default function ShopPage() {
           genresRes.json()
         ]);
 
-        console.log('=== MOST POPULAR BOOKS DEBUG ===');
-        console.log('Total books:', popular.books?.length);
         popular.books?.forEach(book => {
           console.log(`"${book.name}": ${book.reviewCount} reviews, ${book.ratingCount} ratings, avgRating: ${book.avgRating}`);
         });

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import { getUserFromToken } from '@/app/lib/auth';
+import { getUserIdFromToken } from '../../../lib/auth';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
         { status: 400 }
       );
     }
-    const userId = await getUserFromToken();
+    const userId = await getUserIdFromToken();
     const thread = await prisma.thread.findUnique({
       
       where: { thread_id: threadId },

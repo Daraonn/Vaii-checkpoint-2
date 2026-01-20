@@ -114,6 +114,52 @@ export default function BookPageClient({ book }) {
     fetchReviews();
   }, [book.book_id, userId]);
 
+  const toggleFavorite = async () => {
+    if (!userId) {
+      setMessage("Please login to add to favorites.");
+      setTimeout(() => setMessage(""), 3000);
+      return;
+    }
+
+    try {
+      if (isFavorited) {
+        // Remove from favorites
+        const res = await fetch(`/api/user/${userId}/favorites/${book.book_id}`, {
+          method: 'DELETE'
+        });
+
+        if (res.ok) {
+          setIsFavorited(false);
+          setMessage("✓ Removed from favorites!");
+          setTimeout(() => setMessage(""), 3000);
+        } else {
+          const data = await res.json();
+          setMessage(data.error || "Failed to remove from favorites");
+        }
+      } else {
+        // Add to favorites
+        const res = await fetch(`/api/user/${userId}/favorites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ book_id: book.book_id })
+        });
+
+        if (res.ok) {
+          setIsFavorited(true);
+          setMessage("✓ Added to favorites!");
+          setTimeout(() => setMessage(""), 3000);
+        } else {
+          const data = await res.json();
+          setMessage(data.error || "Failed to add to favorites");
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      setMessage("An error occurred.");
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
+
   const addToCart = async () => {
     if (!userId) {
       setMessage("Please login to add to cart.");
@@ -489,6 +535,13 @@ export default function BookPageClient({ book }) {
               />
               {loading ? "Loading..." : "Add to Cart"}
             </button>
+            <button 
+              className={`${styles.favoriteBtn} ${isFavorited ? styles.favorited : ''}`}
+              onClick={toggleFavorite}
+              disabled={loading}
+             >
+              {isFavorited ? 'Remove from Favorites' : 'Add to Favorites'}
+            </button>
 
             <div className={styles.rateThisBook}>
               <p className={styles.rateLabel}>Rate this book</p>
@@ -642,6 +695,8 @@ export default function BookPageClient({ book }) {
                 />
                 {loading ? "Loading..." : "Add to Cart"}
               </button>
+
+              
             </div>
           </div>
 
