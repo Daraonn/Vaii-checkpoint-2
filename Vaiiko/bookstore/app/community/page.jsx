@@ -234,7 +234,7 @@ export default function CommunityPage() {
                     onClick={(e) => handleAdminDeleteThread(thread.thread_id, e)}
                     title="Delete thread as admin"
                   >
-                    Admin Delete
+                    Admin Deletee
                   </button>
                 )}
               </div>

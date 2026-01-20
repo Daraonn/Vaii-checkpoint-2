@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import { getUserFromToken } from '@/app/lib/auth';
+import { getUserIdFromToken } from '../../../..//lib/auth';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function PUT(request, { params }) {
   try {
-    const userId = await getUserFromToken();
+    const userId = await getUserIdFromToken();
     if (!userId) {
       return Response.json(
         { error: 'Unauthorized' },
@@ -69,7 +69,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const userId = await getUserFromToken();
+    const userId = await getUserIdFromToken();
     if (!userId) {
       return Response.json(
         { error: 'Unauthorized' },

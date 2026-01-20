@@ -84,8 +84,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.2s;
-}
+  position: relative; 
 
+}
 .thread-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
@@ -310,6 +311,42 @@
   margin-top: 24px;
 }
 
+
+
+.admin-delete-thread-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.admin-delete-thread-btn:hover {
+  background-color: #b91c1c;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
+}
+
+.admin-delete-thread-btn:active {
+  transform: scale(0.98);
+}
+
+.admin-delete-thread-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.thread-card:has(.admin-delete-thread-btn:hover) {
+  transform: none;
+}
 @media (max-width: 768px) {
   .community-header {
     flex-direction: column;

@@ -78,7 +78,7 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    const userId = await getUserFromToken();
+    const userId = await getUserIdFromToken();
     if (!userId) {
       return Response.json(
         { error: 'Unauthorized' },
@@ -139,7 +139,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const userId = await getUserFromToken();
+    const userId = await getUserIdFromToken();
     if (!userId) {
       return Response.json(
         { error: 'Unauthorized' },
