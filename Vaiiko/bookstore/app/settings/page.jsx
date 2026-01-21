@@ -221,8 +221,8 @@ const SettingsPage = () => {
       return;
     }
 
-    if (accountData.newPassword.length < 6) {
-      showMessage('Password must be at least 6 characters', 'error');
+    if (accountData.newPassword.length < 8) {
+      showMessage('Password must be at least 8 characters', 'error');
       return;
     }
 
