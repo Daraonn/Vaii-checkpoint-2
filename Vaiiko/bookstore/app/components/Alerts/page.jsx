@@ -44,7 +44,7 @@ const AlertsPage = () => {
 
   const markAllAsRead = async () => {
     try {
-      await fetch('/api/alerts/mark-all-read', {
+      await fetch('/api/alerts/markAllRead', {
         method: 'POST'
       });
       setAlerts(alerts.map(alert => ({ ...alert, is_read: true })));
