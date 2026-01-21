@@ -6,7 +6,7 @@ import { getUserIdFromToken } from '@/app/lib/auth';
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// PUT - Edit message
+
 export async function PUT(req, context) {
   const userId = await getUserIdFromToken();
   const { params } = context;

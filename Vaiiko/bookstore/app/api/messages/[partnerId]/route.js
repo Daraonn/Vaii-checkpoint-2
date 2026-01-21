@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
-// GET - Get messages with a specific user
+
 export async function GET(req, context) {
   const userId = await getUserIdFromToken();
   const { params } = context;
@@ -71,7 +71,7 @@ export async function GET(req, context) {
   }
 }
 
-// POST - Send a message
+
 export async function POST(req, context) {
   const userId = await getUserIdFromToken();
   const { params } = context;
