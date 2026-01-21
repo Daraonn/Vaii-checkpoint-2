@@ -41,8 +41,7 @@ export default function CommunityPage() {
       setLoading(true);
       console.log('Fetching threads from API...');
       const response = await fetch(`/api/threads?page=${page}&limit=10`);
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers.get('content-type'));
+      
       
       const text = await response.text();
       console.log('Response text (first 200 chars):', text.substring(0, 200));
@@ -51,8 +50,7 @@ export default function CommunityPage() {
       try {
         data = JSON.parse(text);
       } catch (e) {
-        console.error('Failed to parse JSON:', e);
-        console.error('Full response text:', text);
+        
         throw new Error('Server returned invalid JSON. Check console for details.');
       }
       
