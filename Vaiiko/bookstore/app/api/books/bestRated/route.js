@@ -35,7 +35,7 @@ export async function GET() {
       }))
       .filter(book => book.ratingCount > 0)
       .sort((a, b) => b.avgRating - a.avgRating)
-      .slice(0, 8);
+      .slice(0, 6);
 
     return Response.json({ books: booksWithRatings });
   } catch (error) {
