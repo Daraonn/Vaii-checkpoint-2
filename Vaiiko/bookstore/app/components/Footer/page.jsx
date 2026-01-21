@@ -17,7 +17,11 @@ export default function Footer() {
         <div className="footer-column">
           <h3>About Us</h3>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+            We’re a small, independent bookstore with a big love for stories.
+
+            What started as a passion for well-loved paperbacks, beautiful hardcovers, and hidden literary gems has grown into an online space where readers from anywhere can discover their next favorite book. We believe books have the power to slow us down, spark curiosity, and bring people together—and that belief is at the heart of everything we do.
+
+            
           </p>
         </div>
 
