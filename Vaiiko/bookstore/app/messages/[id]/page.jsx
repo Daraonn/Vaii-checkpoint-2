@@ -42,14 +42,6 @@ const MessagesPage = () => {
     }
   }, [partnerId]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const fetchCurrentUser = async () => {
     try {
       const res = await fetch('/api/token');
@@ -149,6 +141,7 @@ const MessagesPage = () => {
     }
 
     setSending(true);
+    
     try {
       const url = `/api/messages/${partnerId}`;
       console.log('POST to:', url);

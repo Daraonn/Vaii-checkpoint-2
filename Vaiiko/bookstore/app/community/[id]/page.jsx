@@ -20,6 +20,7 @@ export default function ThreadDetailPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [blockedUsers, setBlockedUsers] = useState([]);
   const router = useRouter();
   const params = useParams();
   const threadId = params.id;
@@ -28,6 +29,7 @@ export default function ThreadDetailPage() {
     if (threadId) {
       fetchThread();
       checkAdminStatus();
+      fetchBlockedUsers();
     }
   }, [threadId]);
 
@@ -41,6 +43,22 @@ export default function ThreadDetailPage() {
     } catch (err) {
       console.error('Error checking admin status:', err);
     }
+  };
+
+  const fetchBlockedUsers = async () => {
+    try {
+      const res = await fetch('/api/blocks');
+      if (res.ok) {
+        const data = await res.json();
+        setBlockedUsers(data.blocks || []);
+      }
+    } catch (err) {
+      console.error('Error fetching blocked users:', err);
+    }
+  };
+
+  const isUserBlocked = (userId) => {
+    return blockedUsers.some(block => block.blocked.user_id === userId);
   };
 
   const fetchThread = async () => {
@@ -298,20 +316,32 @@ export default function ThreadDetailPage() {
           <div className="thread-header-section">
             <div 
               className="user-info"
-              onClick={() => router.push(`/profile/${thread.user.user_id}`)}
-              style={{ cursor: 'pointer' }}
+              onClick={() => !isUserBlocked(thread.user.user_id) && router.push(`/profile/${thread.user.user_id}`)}
+              style={{ cursor: isUserBlocked(thread.user.user_id) ? 'default' : 'pointer' }}
             >
-              {thread.user.avatar ? (
-                <img src={thread.user.avatar} alt={thread.user.username || thread.user.name} className="user-avatar" />
+              {isUserBlocked(thread.user.user_id) ? (
+                <>
+                  <div className="avatar-placeholder">B</div>
+                  <div className="user-details">
+                    <span className="user-name">Blocked User</span>
+                    <span className="post-time">{formatDate(thread.createdAt)}</span>
+                  </div>
+                </>
               ) : (
-                <div className="avatar-placeholder">
-                  {(thread.user.username || thread.user.name)?.charAt(0)?.toUpperCase() || '?'}
-                </div>
+                <>
+                  {thread.user.avatar ? (
+                    <img src={thread.user.avatar} alt={thread.user.username || thread.user.name} className="user-avatar" />
+                  ) : (
+                    <div className="avatar-placeholder">
+                      {(thread.user.username || thread.user.name)?.charAt(0)?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                  <div className="user-details">
+                    <span className="user-name">{thread.user.username || thread.user.name}</span>
+                    <span className="post-time">{formatDate(thread.createdAt)}</span>
+                  </div>
+                </>
               )}
-              <div className="user-details">
-                <span className="user-name">{thread.user.username || thread.user.name}</span>
-                <span className="post-time">{formatDate(thread.createdAt)}</span>
-              </div>
             </div>
 
             <div className="thread-actions">
@@ -376,7 +406,9 @@ export default function ThreadDetailPage() {
           ) : (
             <>
               <h1 className="thread-title">{thread.title}</h1>
-              <p className="thread-content">{thread.content}</p>
+              <p className="thread-content">
+                {isUserBlocked(thread.user.user_id) ? '[Content hidden - User blocked]' : thread.content}
+              </p>
             </>
           )}
         </div>
@@ -392,88 +424,106 @@ export default function ThreadDetailPage() {
                 <p>No comments yet. Be the first to comment!</p>
               </div>
             ) : (
-              paginatedComments.map((comment) => (
-                <div key={comment.comment_id} className="comment">
-                  <div className="comment-header">
-                    <div 
-                      className="comment-user-info"
-                      onClick={() => router.push(`/profile/${comment.user.user_id}`)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {comment.user.avatar ? (
-                        <img src={comment.user.avatar} alt={comment.user.username || comment.user.name} className="comment-avatar" />
-                      ) : (
-                        <div className="avatar-placeholder small">
-                          {(comment.user.username || comment.user.name)?.charAt(0)?.toUpperCase() || '?'}
-                        </div>
-                      )}
-                      <div className="comment-user-details">
-                        <span className="comment-user-name">{comment.user.username || comment.user.name}</span>
-                        <span className="comment-time">{formatDate(comment.createdAt)}</span>
-                        {comment.updatedAt !== comment.createdAt && (
-                          <span className="edited-badge">(edited)</span>
+              paginatedComments.map((comment) => {
+                const commentBlocked = isUserBlocked(comment.user.user_id);
+                
+                return (
+                  <div key={comment.comment_id} className="comment">
+                    <div className="comment-header">
+                      <div 
+                        className="comment-user-info"
+                        onClick={() => !commentBlocked && router.push(`/profile/${comment.user.user_id}`)}
+                        style={{ cursor: commentBlocked ? 'default' : 'pointer' }}
+                      >
+                        {commentBlocked ? (
+                          <>
+                            <div className="avatar-placeholder small">B</div>
+                            <div className="comment-user-details">
+                              <span className="comment-user-name">Blocked User</span>
+                              <span className="comment-time">{formatDate(comment.createdAt)}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {comment.user.avatar ? (
+                              <img src={comment.user.avatar} alt={comment.user.username || comment.user.name} className="comment-avatar" />
+                            ) : (
+                              <div className="avatar-placeholder small">
+                                {(comment.user.username || comment.user.name)?.charAt(0)?.toUpperCase() || '?'}
+                              </div>
+                            )}
+                            <div className="comment-user-details">
+                              <span className="comment-user-name">{comment.user.username || comment.user.name}</span>
+                              <span className="comment-time">{formatDate(comment.createdAt)}</span>
+                              {comment.updatedAt !== comment.createdAt && (
+                                <span className="edited-badge">(edited)</span>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      <div className="comment-actions">
+                        {user && user.user_id === comment.user_id && !editingComment && (
+                          <>
+                            <button
+                              onClick={() => setEditingComment({ id: comment.comment_id, content: comment.content })}
+                              className="action-button edit-btn small"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteComment(comment.comment_id)}
+                              className="action-button delete-btn small"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                        
+                        {isAdmin && user && user.user_id !== comment.user_id && (
+                          <button
+                            onClick={() => handleAdminDeleteComment(comment.comment_id)}
+                            className="action-button admin-delete"
+                            title="Delete comment as admin"
+
+                            style={{ 
+                              backgroundColor: '#dc3545', 
+                              color: 'white',
+                              border: 'none'
+                            }}
+                          >
+                            Admin Delete
+                          </button>
                         )}
                       </div>
                     </div>
 
-                    <div className="comment-actions">
-                      {user && user.user_id === comment.user_id && !editingComment && (
-                        <>
-                          <button
-                            onClick={() => setEditingComment({ id: comment.comment_id, content: comment.content })}
-                            className="action-button edit-btn small"
-                          >
-                            Edit
+                    {editingComment && editingComment.id === comment.comment_id ? (
+                      <div className="edit-comment-form">
+                        <textarea
+                          value={editingComment.content}
+                          onChange={(e) => setEditingComment({ ...editingComment, content: e.target.value })}
+                          className="edit-textarea"
+                          rows="3"
+                        />
+                        <div className="edit-actions">
+                          <button onClick={() => setEditingComment(null)} className="btn-secondary small">
+                            Cancel
                           </button>
-                          <button
-                            onClick={() => handleDeleteComment(comment.comment_id)}
-                            className="action-button delete-btn small"
-                          >
-                            Delete
+                          <button onClick={() => handleEditComment(comment.comment_id)} className="btn-primary small">
+                            Save
                           </button>
-                        </>
-                      )}
-                      
-                      {isAdmin && user && user.user_id !== comment.user_id && (
-                        <button
-                          onClick={() => handleAdminDeleteComment(comment.comment_id)}
-                          className="action-button admin-delete"
-                          title="Delete comment as admin"
-
-                          style={{ 
-                            backgroundColor: '#dc3545', 
-                            color: 'white',
-                            border: 'none'
-                          }}
-                        >
-                          Admin Delete
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {editingComment && editingComment.id === comment.comment_id ? (
-                    <div className="edit-comment-form">
-                      <textarea
-                        value={editingComment.content}
-                        onChange={(e) => setEditingComment({ ...editingComment, content: e.target.value })}
-                        className="edit-textarea"
-                        rows="3"
-                      />
-                      <div className="edit-actions">
-                        <button onClick={() => setEditingComment(null)} className="btn-secondary small">
-                          Cancel
-                        </button>
-                        <button onClick={() => handleEditComment(comment.comment_id)} className="btn-primary small">
-                          Save
-                        </button>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <p className="comment-content">{comment.content}</p>
-                  )}
-                </div>
-              ))
+                    ) : (
+                      <p className="comment-content">
+                        {commentBlocked ? '[Comment hidden - User blocked]' : comment.content}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
 
