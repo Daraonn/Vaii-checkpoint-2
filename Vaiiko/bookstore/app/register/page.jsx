@@ -89,7 +89,7 @@ const Register = () => {
   return (
     <div className="register">
       <div className="register-container">
-        <h1>Zaregistruj sa</h1>
+        <h1>Register here</h1>
         <form onSubmit={handleSubmit} className="register-fields">
           <input
             type="text"
